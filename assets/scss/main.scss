@@ -1,0 +1,26 @@
+// Import our custom fonts
+@import "fonts";
+
+// Import our custom variables
+@import "variables";
+
+// Import Bootstrap
+@import "bootstrap/scss/bootstrap";
+
+html,
+body,
+#__nuxt {
+  height: 100%;
+}
+
+:root {
+  --h1-line-height: 3.625rem;
+  --h2-line-height: 2.75rem;
+  --h3-line-height: 2rem;
+  --h4-line-height: 1.75rem;
+  --h5-line-height: 1.5rem;
+  --h6-line-height: 1.25rem;
+
+  --body: #{$dark};
+  --line-height-base: #{$line-height-base}rem;
+}
