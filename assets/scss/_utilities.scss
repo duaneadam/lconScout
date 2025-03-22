@@ -1,0 +1,336 @@
+// Tailwind-like utility classes using Bootstrap's spacing utilities
+// Based on https://getbootstrap.com/docs/5.0/utilities/spacing/
+// And font size utilities based on our variables
+
+// Custom spacing scale that follows Tailwind's approach
+$custom-spacers: (
+  0: 0,
+  1: 0.25rem,    // 4px
+  2: 0.5rem,     // 8px
+  3: 0.75rem,    // 12px
+  4: 1rem,       // 16px
+  5: 1.25rem,    // 20px
+  6: 1.5rem,     // 24px
+  8: 2rem,       // 32px
+  10: 2.5rem,    // 40px
+  12: 3rem,      // 48px
+  16: 4rem,      // 64px
+  20: 5rem,      // 80px
+  24: 6rem,      // 96px
+  32: 8rem,      // 128px
+  40: 10rem,     // 160px
+  48: 12rem,     // 192px
+  56: 14rem,     // 224px
+  64: 16rem,     // 256px
+  72: 18rem,     // 288px
+  80: 20rem,     // 320px
+  96: 24rem      // 384px
+);
+
+// Override Bootstrap's $spacer variable
+$spacer: 1rem !default;
+
+// Override Bootstrap's $spacers map with our custom one
+$spacers: $custom-spacers !default;
+
+// Size utilities (width and height)
+$sizes: (
+  0: 0,
+  1: 0.25rem,
+  2: 0.5rem,
+  3: 0.75rem,
+  4: 1rem,
+  5: 1.25rem,
+  6: 1.5rem,
+  8: 2rem,
+  10: 2.5rem,
+  12: 3rem,
+  16: 4rem,
+  20: 5rem,
+  24: 6rem,
+  32: 8rem,
+  40: 10rem,
+  48: 12rem,
+  56: 14rem,
+  64: 16rem,
+  72: 18rem,
+  80: 20rem,
+  96: 24rem,
+  25: 25%,
+  50: 50%,
+  75: 75%,
+  100: 100%,
+  auto: auto
+) !default;
+
+// Width utilities
+@each $size, $value in $sizes {
+  .w-#{$size} {
+    width: $value !important;
+  }
+}
+
+// Height utilities
+@each $size, $value in $sizes {
+  .h-#{$size} {
+    height: $value !important;
+  }
+}
+
+// Min-width utilities
+@each $size, $value in $sizes {
+  .min-w-#{$size} {
+    min-width: $value !important;
+  }
+}
+
+// Min-height utilities
+@each $size, $value in $sizes {
+  .min-h-#{$size} {
+    min-height: $value !important;
+  }
+}
+
+// Special min-width/min-height cases
+.min-w-full {
+  min-width: 100% !important;
+}
+
+.min-h-full {
+  min-height: 100% !important;
+}
+
+.min-h-screen {
+  min-height: 100vh !important;
+}
+
+// Max-width utilities
+$max-widths: (
+  "none": none,
+  "full": 100%,
+  "xs": 20rem,      // 320px
+  "sm": 24rem,      // 384px
+  "md": 28rem,      // 448px
+  "lg": 32rem,      // 512px
+  "xl": 36rem,      // 576px
+  "2xl": 42rem,     // 672px
+  "3xl": 48rem,     // 768px
+  "4xl": 56rem,     // 896px
+  "5xl": 64rem,     // 1024px
+  "6xl": 72rem,     // 1152px
+  "7xl": 80rem      // 1280px
+);
+
+@each $name, $value in $max-widths {
+  .max-w-#{$name} {
+    max-width: $value !important;
+  }
+}
+
+// Max-height utilities
+.max-h-full {
+  max-height: 100% !important;
+}
+
+.max-h-screen {
+  max-height: 100vh !important;
+}
+
+// Font size utilities based on our variables
+$font-sizes: (
+  'xs': 0.75rem,       // 12px
+  'sm': $font-size-sm,  // 0.875rem - 14px
+  'base': $font-size-base, // 1rem - 16px
+  'lg': $font-size-lg,  // 1.125rem - 18px
+  'xl': $h6-font-size,  // 0.875rem
+  '2xl': $h5-font-size, // 1rem
+  '3xl': $h4-font-size, // 1.25rem
+  '4xl': $h3-font-size, // 1.5rem
+  '5xl': $h2-font-size, // 2.25rem
+  '6xl': $h1-font-size, // 3rem
+  '7xl': $display4-size, // 3rem
+  '8xl': $display3-size, // 4.5rem
+  '9xl': $display2-size, // 5.5rem
+  '10xl': $display1-size // 6rem
+);
+
+// Generate font-size utilities
+@each $name, $value in $font-sizes {
+  .fs-#{$name} {
+    font-size: $value !important;
+  }
+}
+
+// Responsive font size utilities
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    
+    @each $name, $value in $font-sizes {
+      .fs#{$infix}-#{$name} {
+        font-size: $value !important;
+      }
+    }
+  }
+}
+
+// Font weight utilities
+$font-weights: (
+  'thin': 100,
+  'extralight': 200,
+  'light': 300,
+  'normal': $font-weight-normal, // 400
+  'medium': 500,
+  'semibold': 600,
+  'bold': $font-weight-bold, // 700
+  'extrabold': 800,
+  'black': 900
+);
+
+// Generate font-weight utilities
+@each $name, $value in $font-weights {
+  .fw-#{$name} {
+    font-weight: $value !important;
+  }
+}
+
+// Responsive font weight utilities
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    
+    @each $name, $value in $font-weights {
+      .fw#{$infix}-#{$name} {
+        font-weight: $value !important;
+      }
+    }
+  }
+}
+
+// Line height utilities
+$line-heights: (
+  'none': 1,
+  'tight': 1.25,
+  'snug': 1.375,
+  'normal': $line-height-base, // 1.5
+  'relaxed': 1.625,
+  'loose': 2
+);
+
+// Generate line-height utilities
+@each $name, $value in $line-heights {
+  .lh-#{$name} {
+    line-height: $value !important;
+  }
+}
+
+// Responsive line height utilities
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    
+    @each $name, $value in $line-heights {
+      .lh#{$infix}-#{$name} {
+        line-height: $value !important;
+      }
+    }
+  }
+}
+
+// Size utility (sets both width and height)
+@each $size, $value in $sizes {
+  .size-#{$size} {
+    width: $value !important;
+    height: $value !important;
+  }
+}
+
+// Screen-specific utilities
+.w-screen {
+  width: 100vw !important;
+}
+
+.h-screen {
+  height: 100vh !important;
+}
+
+// Responsive variants for all utilities above
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    
+    // Width utilities
+    @each $size, $value in $sizes {
+      .w#{$infix}-#{$size} {
+        width: $value !important;
+      }
+    }
+    
+    // Height utilities
+    @each $size, $value in $sizes {
+      .h#{$infix}-#{$size} {
+        height: $value !important;
+      }
+    }
+    
+    // Min-width utilities
+    @each $size, $value in $sizes {
+      .min-w#{$infix}-#{$size} {
+        min-width: $value !important;
+      }
+    }
+    
+    // Min-height utilities
+    @each $size, $value in $sizes {
+      .min-h#{$infix}-#{$size} {
+        min-height: $value !important;
+      }
+    }
+    
+    // Special min-width/min-height cases
+    .min-w#{$infix}-full {
+      min-width: 100% !important;
+    }
+    
+    .min-h#{$infix}-full {
+      min-height: 100% !important;
+    }
+    
+    .min-h#{$infix}-screen {
+      min-height: 100vh !important;
+    }
+    
+    // Max-width utilities
+    @each $name, $value in $max-widths {
+      .max-w#{$infix}-#{$name} {
+        max-width: $value !important;
+      }
+    }
+    
+    // Max-height utilities
+    .max-h#{$infix}-full {
+      max-height: 100% !important;
+    }
+    
+    .max-h#{$infix}-screen {
+      max-height: 100vh !important;
+    }
+    
+    // Size utility
+    @each $size, $value in $sizes {
+      .size#{$infix}-#{$size} {
+        width: $value !important;
+        height: $value !important;
+      }
+    }
+    
+    // Screen-specific utilities
+    .w#{$infix}-screen {
+      width: 100vw !important;
+    }
+    
+    .h#{$infix}-screen {
+      height: 100vh !important;
+    }
+  }
+}

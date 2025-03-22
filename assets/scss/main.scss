@@ -1,10 +1,14 @@
 // Import our custom fonts
 @import "fonts";
 
-// Import our custom variables
-@import "variables";
+// Import Bootstrap functions and variables first
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
 
-// Import Bootstrap
+// Import our custom variables & utilities
+@import "variables";
+@import "utilities";
 @import "bootstrap/scss/bootstrap";
 
 html,

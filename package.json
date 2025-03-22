@@ -25,6 +25,7 @@
     "@bootstrap-vue-next/nuxt": "^0.28.3",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.28.3",
+    "nuxt-icon": "1.0.0-beta.7",
     "sass": "^1.86.0"
   }
 }
