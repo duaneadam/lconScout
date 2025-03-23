@@ -1,8 +1,5 @@
 # Guidelines
 
-- Use Bootstrap Vue Next for styling. Focus on components, but use utilities when needed.
-- Prioritize SSR to improve SEO.
-
 ## Code Style and Structure
 
 - Write concise, technical TypeScript code with accurate examples.
