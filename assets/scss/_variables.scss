@@ -63,3 +63,31 @@ $lead-font-weight: $font-weight-normal;
 
 // Small
 $small-font-size: 0.85em;
+
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+
+  // Custom spacers
+  1b: $spacer * 0.25,
+  2b: $spacer * 0.5,
+  3b: $spacer * 0.75,
+  4b: $spacer * 1,
+  5b: $spacer * 1.25,
+  6b: $spacer * 1.5,
+  7b: $spacer * 1.75,
+  8b: $spacer * 2,
+  9b: $spacer * 2.25,
+  10b: $spacer * 2.5,
+  11b: $spacer * 2.75,
+  12b: $spacer * 3,
+  13b: $spacer * 3.25,
+  14b: $spacer * 3.5,
+  15b: $spacer * 3.75,
+  16b: $spacer * 4,
+);

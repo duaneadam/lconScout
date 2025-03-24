@@ -11,11 +11,15 @@ export const useSearchTitle = (
   // Computed properties for SearchHeader
   const title = computed(() => {
     const query = searchQuery.value ? `${searchQuery.value} ` : "";
-    return `${totalItems.value} ${query}${resolvedAssetType.value}`;
+    return `${formatNumber(totalItems.value)} ${query}${
+      resolvedAssetType.value
+    }`;
   });
 
   const subtitle = computed(() => {
-    return `${totalItems.value} ${resolvedAssetType.value}s exclusively selected by our designer community.`;
+    return `${formatNumber(totalItems.value)} ${
+      resolvedAssetType.value
+    } exclusively selected by our designer community.`;
   });
 
   return {
