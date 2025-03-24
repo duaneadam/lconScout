@@ -37,191 +37,216 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <footer class="footer">
+  <footer class="footer fs-sm">
     <div class="footer__content">
       <div class="container py-5">
-        <div class="row">
-          <div class="col-6 col-md-3 mb-4">
-            <h5 class="footer__heading mb-3">Design Assets</h5>
+        <div class="row row-cols-xl-5">
+          <div class="col col-6 col-md-3 mb-4">
+            <h5 class="footer__heading mb-3">Graphic Resources</h5>
             <ul class="footer__list list-unstyled">
               <li>
-                <NuxtLink to="/3d-illustrations" class="footer__link"
-                  >3D Illustrations</NuxtLink
+                <NuxtLink to="/free-icons" class="footer__link"
+                  >Free Icons</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/lottie-animations" class="footer__link"
-                  >Lottie Animations</NuxtLink
+                <NuxtLink to="/free-emoji-icons" class="footer__link"
+                  >Free Emoji Icons</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/illustrations" class="footer__link"
-                  >Illustrations</NuxtLink
+                <NuxtLink to="/free-logo-icons" class="footer__link"
+                  >Free Logo Icons</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/illustration-kit" class="footer__link"
-                  >Illustration Kit</NuxtLink
+                <NuxtLink to="/ios-icons" class="footer__link"
+                  >iOS Icons</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/icons" class="footer__link">Icons</NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/unicons" class="footer__link">Unicons</NuxtLink>
-              </li>
-            </ul>
-          </div>
-
-          <div class="col-6 col-md-3 mb-4">
-            <h5 class="footer__heading mb-3">Tools</h5>
-            <ul class="footer__list list-unstyled">
-              <li>
-                <NuxtLink to="/illustration-kit" class="footer__link"
-                  >Illustration Kit</NuxtLink
+                <NuxtLink to="/sticker-icons" class="footer__link"
+                  >Sticker Icons</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/gltf-3d-editor" class="footer__link"
-                  >GLTF 3D Editor</NuxtLink
+                <NuxtLink to="/gradient-icons" class="footer__link"
+                  >Gradient Icons</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/svg-editor" class="footer__link"
-                  >SVG Editor</NuxtLink
+                <NuxtLink to="/curated-bundle" class="footer__link"
+                  >Curated Bundle</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/converter/svg-to-png" class="footer__link"
-                  >SVG to PNG</NuxtLink
+                <NuxtLink to="/calendar-of-festival" class="footer__link"
+                  >Calendar of Festival</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/ai/illustration-generator" class="footer__link"
-                  >AI Illustration Generator</NuxtLink
-                >
-              </li>
-              <li><NuxtLink to="/api" class="footer__link">API</NuxtLink></li>
-            </ul>
-          </div>
-
-          <div class="col-6 col-md-3 mb-4">
-            <h5 class="footer__heading mb-3">Plugins & Apps</h5>
-            <ul class="footer__list list-unstyled">
-              <li>
-                <NuxtLink to="/plugins/for-figma" class="footer__link"
-                  >Figma Plugin</NuxtLink
+                <NuxtLink to="/free-assets-of-the-day" class="footer__link"
+                  >Free Assets of the day</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/plugins/iconscout-for-canva" class="footer__link"
-                  >Canva Plugin</NuxtLink
-                >
-              </li>
-              <li>
-                <NuxtLink to="/plugins/for-powerpoint" class="footer__link"
-                  >PowerPoint Plugin</NuxtLink
-                >
-              </li>
-              <li>
-                <NuxtLink to="/desktop-app/for-mac" class="footer__link"
-                  >Mac App</NuxtLink
-                >
-              </li>
-              <li>
-                <NuxtLink to="/desktop-app/for-windows" class="footer__link"
-                  >Windows App</NuxtLink
+                <NuxtLink to="/explore-design-assets" class="footer__link"
+                  >Explore Design Assets</NuxtLink
                 >
               </li>
             </ul>
           </div>
 
-          <div class="col-6 col-md-3 mb-4">
+          <div class="col col-6 col-md-3 mb-4">
+            <h5 class="footer__heading mb-3">Products</h5>
+            <ul class="footer__list list-unstyled">
+              <li>
+                <NuxtLink to="/unicon-icon-font" class="footer__link"
+                  >Unicon Icon Font</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/color-editor" class="footer__link"
+                  >Color editor</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/apps-and-plugins" class="footer__link"
+                  >Apps & Plugins</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/hire-designers" class="footer__link"
+                  >Hire designers</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/api" class="footer__link"
+                  >IconScout API</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/top-illustrations" class="footer__link"
+                  >Top Illustrations</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/top-3d-assets" class="footer__link"
+                  >Top 3D Assets</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/reverse-image-search" class="footer__link"
+                  >Reverse Image Search</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/unicon-plugin-for-figma" class="footer__link"
+                  >Unicon Plugin for Figma</NuxtLink
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="col col-6 col-md-3 mb-4">
             <h5 class="footer__heading mb-3">Company</h5>
             <ul class="footer__list list-unstyled">
-              <li><NuxtLink to="/blog" class="footer__link">Blog</NuxtLink></li>
               <li>
-                <NuxtLink to="/become-contributor" class="footer__link"
+                <NuxtLink to="/blog" class="footer__link">Blog</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/about" class="footer__link">About</NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/access-features" class="footer__link"
+                  >Access features</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/sell-on-iconscout" class="footer__link"
                   >Sell on IconScout</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/legal/terms-of-use" class="footer__link"
-                  >Terms of Use</NuxtLink
+                <NuxtLink to="/startup-program" class="footer__link"
+                  >Startup program</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink to="/legal/privacy-policy" class="footer__link"
-                  >Privacy Policy</NuxtLink
-                >
-              </li>
-              <li>
-                <NuxtLink to="/legal/contributor-terms" class="footer__link"
-                  >Contributor Terms</NuxtLink
-                >
-              </li>
-              <li>
-                <NuxtLink to="/licenses" class="footer__link"
-                  >Licenses</NuxtLink
+                <NuxtLink to="/were-hiring" class="footer__link"
+                  >We're hiring</NuxtLink
                 >
               </li>
             </ul>
+          </div>
+
+          <div class="col col-6 col-md-3 mb-4">
+            <h5 class="footer__heading mb-3">Legal</h5>
+            <ul class="footer__list list-unstyled">
+              <li>
+                <NuxtLink to="/terms-of-use" class="footer__link"
+                  >Terms of use</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/privacy-policy" class="footer__link"
+                  >Privacy policy</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/license-agreement" class="footer__link"
+                  >License agreement</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/contributor-terms" class="footer__link"
+                  >Contributor terms</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/support-center" class="footer__link"
+                  >Support center</NuxtLink
+                >
+              </li>
+              <li>
+                <NuxtLink to="/join-discord-community" class="footer__link"
+                  >Join discord community</NuxtLink
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="col col-6 col-md-3 mb-4">
+            <h5 class="footer__heading mb-3">Get IconScout for desktop</h5>
+
+            <h5 class="footer__heading mb-3">Get LottieFiles mobile app</h5>
           </div>
         </div>
       </div>
     </div>
 
     <div class="footer__copyright">
-      <div class="container py-5-5">
+      <div class="container">
         <div class="row no-gutters justify-content-between text-secondary">
           <div
-            class="d-flex align-items-center overflow-hidden mb-2-5 col-12 col-sm-7 mb-sm-0"
+            class="d-flex align-items-center overflow-hidden col-10 col-sm-7"
           >
-            <div>
-              <div class="secondary-muted font-size-sm">
-                © {{ new Date().getFullYear() }} Design Barn Inc. Made with
-                <span slot="love" class="text-danger heartIcon_gdRFl"
-                  ><svg
-                    width="16"
-                    height="16"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="ui-svg-inline"
-                  >
-                    <path
-                      d="M20.8,5.7c-2.1-2.8-6-3.4-8.8-1.3C9.5,2.5,6,2.8,3.8,5c-2.4,2.4-2.5,6.4,0,8.9l6.2,6.2c0.5,0.5,1.2,0.8,1.9,0.8c0.7,0,1.4-0.3,1.9-0.8l6.2-6.2C22.4,11.6,22.6,8.2,20.8,5.7z"
-                    ></path></svg
-                ></span>
-                from
-                <span class="country-rotator">
-                  <transition name="fade" mode="out-in">
-                    <span :key="currentCountry">{{ currentCountry }}</span>
-                  </transition>
-                </span>
-              </div>
-            </div>
+            © {{ new Date().getFullYear() }} Design Barn Inc. Made with
+            <Icon name="mdi:heart" size="16" class="text-danger mx-1" />
+            from
+            <span class="country-rotator ms-1">
+              <transition name="fade" mode="out-in">
+                <span :key="currentCountry">{{ currentCountry }}</span>
+              </transition>
+            </span>
           </div>
           <div
-            class="d-flex align-items-center justify-content-start font-size-sm col-12 col-sm-5 justify-content-sm-end"
+            class="h-20 d-flex align-items-center justify-content-start col-12 col-sm-5 justify-content-sm-end"
           >
-            <span class="d-flex align-items-center"
-              ><svg
-                width="22"
-                height="22"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="ui-svg-inline text-warning"
-              >
-                <path
-                  d="M17,9V7c0-2.8-2.2-5-5-5S7,4.2,7,7v2c-1.7,0-3,1.3-3,3v7c0,1.7,1.3,3,3,3h10c1.7,0,3-1.3,3-3v-7C20,10.3,18.7,9,17,9z M9,7c0-1.7,1.3-3,3-3s3,1.3,3,3v2H9V7z"
-                ></path>
-              </svg>
-              <i class="ml-2 text-muted text-nowrap">Secure Payment</i>
-              <img
-                src="https://cdna.iconscout.com/img/stripe.4a3c31e.svg"
-                alt="Stripe"
+            <span class="d-flex align-items-center">
+              <Icon name="uis:lock" size="22" class="me-1 text-warning" />
+              <i class="me-4 text-muted">Secure Payments</i>
+              <NuxtImg src="/images/stripe-logo.svg" alt="Stripe" height="40"
             /></span>
           </div>
         </div>
@@ -231,6 +256,8 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
+@import "/assets/scss/variables";
+
 .footer {
   background-color: #f5f6fa;
 
@@ -254,7 +281,7 @@ onUnmounted(() => {
   }
 
   &__link {
-    color: var(--secondary);
+    color: $gray;
     text-decoration: none;
     display: inline-block;
     padding: 0.25rem 0;

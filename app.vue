@@ -1,7 +1,8 @@
 <template>
-  <div class="h-100">
+  <div>
     <NuxtRouteAnnouncer />
-    <main class="h-100">
+    <TopNavBar />
+    <main>
       <NuxtPage />
     </main>
     <Footer />

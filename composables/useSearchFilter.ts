@@ -17,8 +17,18 @@ export const useSearchFilter = (initialAssetType: string) => {
   };
 
   // Handle asset type changes from AssetTabs component
-  const handleAssetTypeChange = (assetType: string) => {
+  const handleAssetTypeChange = async (assetType: string) => {
+    const router = useRouter();
+    const route = useRoute();
+
     currentAssetType.value = assetType;
+
+    const searchQuery = route.params.query;
+    const targetPath = searchQuery
+      ? `/${assetType}/${searchQuery}`
+      : `/${assetType}`;
+
+    await router.push(targetPath);
   };
 
   // Handle filter changes from SearchSidebar component

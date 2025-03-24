@@ -1,21 +1,23 @@
 <template>
   <div>
     <SearchHeader :title="title" :subtitle="subtitle" />
-    <AssetTabs @asset-type-changed="handleAssetTypeChange" />
 
-    <div class="d-flex mt-4">
+    <div class="d-flex">
       <div class="sidebar-container me-4" style="width: 280px">
         <SearchSidebar
           :external-asset-type="currentAssetType"
           @filter-changed="handleFilterChange"
         />
       </div>
-      <div class="flex-grow-1">
-        <!-- Content for displaying icons will go here -->
-        <div class="p-3 bg-light rounded">
-          <p class="text-center text-muted">
-            Icons content will be displayed here
-          </p>
+      <div>
+        <AssetTabs @asset-type-changed="handleAssetTypeChange" />
+        <div class="p-3 rounded">
+          <SearchResults
+            :asset-type="currentAssetType"
+            :search-query="searchQuery"
+            @total-updated="updateTotalItems"
+            card-variant="square"
+          />
         </div>
       </div>
     </div>
@@ -23,7 +25,11 @@
 </template>
 
 <script setup lang="ts">
-const totalItems = ref(120248); // TODO: This would come from API response
+const totalItems = ref(0);
+
+const updateTotalItems = (total: number) => {
+  totalItems.value = total;
+};
 
 const { currentAssetType, handleAssetTypeChange, handleFilterChange } =
   useSearchFilter("icons");

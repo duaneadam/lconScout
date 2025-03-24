@@ -5,7 +5,7 @@ $yellow: #e7b549;
 $green: #24a8af;
 $cyan: #55afe7;
 $white: #fff;
-$gray: #424866;
+$gray: #5a607d;
 
 // Override Bootstrap's default variables
 $primary: $blue;
@@ -16,6 +16,18 @@ $warning: $yellow;
 $danger: $red;
 $light: #fafafc;
 $dark: #1c2033;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+  "gray": $gray,
+);
 
 // Custom breakpoints
 $grid-breakpoints: (
