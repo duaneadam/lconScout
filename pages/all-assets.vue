@@ -1,26 +1,13 @@
 <template>
-  <div>
-    <SearchHeader :title="title" :subtitle="subtitle" />
-
-    <div class="d-flex">
-      <div class="sidebar-container me-4" style="width: 280px">
-        <SearchSidebar
-          :external-asset-type="currentAssetType"
-          @filter-changed="handleFilterChange"
-        />
-      </div>
-      <div class="flex-grow-1">
-        <AssetTabs @asset-type-changed="handleAssetTypeChange" />
-        <div class="p-3 rounded">
-          <SearchResults
-            :asset-type="currentAssetType"
-            :search-query="searchQuery"
-            @total-updated="updateTotalItems"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
+  <SearchLayout
+    :title="title"
+    :subtitle="subtitle"
+    :current-asset-type="currentAssetType"
+    :search-query="searchQuery"
+    @update:total-items="updateTotalItems"
+    @asset-type-changed="handleAssetTypeChange"
+    @filter-changed="handleFilterChange"
+  />
 </template>
 
 <script setup lang="ts">
@@ -43,10 +30,9 @@ const humanizedAssetType = computed(() =>
   humanizeAssetType(currentAssetType.value)
 );
 
-const { title, subtitle } = useSearchTitle(
-  searchQuery,
-  totalItems,
-  humanizedAssetType
+const title = computed(() => `All Assets (${totalItems.value})`);
+const subtitle = computed(
+  () => `Browse our collection of ${humanizedAssetType.value}`
 );
 
 /**

@@ -1,27 +1,14 @@
 <template>
-  <div>
-    <SearchHeader :title="title" :subtitle="subtitle" />
-
-    <div class="d-flex">
-      <div class="sidebar-container me-4" style="width: 280px">
-        <SearchSidebar
-          :external-asset-type="currentAssetType"
-          @filter-changed="handleFilterChange"
-        />
-      </div>
-      <div>
-        <AssetTabs @asset-type-changed="handleAssetTypeChange" />
-        <div class="p-3 rounded">
-          <SearchResults
-            :asset-type="currentAssetType"
-            :search-query="searchQuery"
-            @total-updated="updateTotalItems"
-            card-variant="square"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
+  <SearchLayout
+    :title="title"
+    :subtitle="subtitle"
+    :current-asset-type="currentAssetType"
+    :search-query="searchQuery"
+    card-variant="square"
+    @update:total-items="updateTotalItems"
+    @asset-type-changed="handleAssetTypeChange"
+    @filter-changed="handleFilterChange"
+  />
 </template>
 
 <script setup lang="ts">
@@ -31,10 +18,23 @@ const updateTotalItems = (total: number) => {
   totalItems.value = total;
 };
 
-const { currentAssetType, handleAssetTypeChange, handleFilterChange } =
-  useSearchFilter("icons");
+const {
+  currentAssetType,
+  humanizeAssetType,
+  handleAssetTypeChange,
+  handleFilterChange,
+} = useSearchFilter("icons");
 const { searchQuery, performSearch } = useSearchQuery("icons");
-const { title, subtitle } = useSearchTitle(searchQuery, totalItems, "Icons");
+
+// Create a computed property for the humanized asset type
+const humanizedAssetType = computed(() =>
+  humanizeAssetType(currentAssetType.value)
+);
+
+const title = computed(() => `Icons (${totalItems.value})`);
+const subtitle = computed(
+  () => `Browse our collection of ${humanizedAssetType.value}`
+);
 
 useHead({
   title: computed(

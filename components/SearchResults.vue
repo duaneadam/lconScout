@@ -1,8 +1,11 @@
 <template>
   <div class="search-results">
-    <div v-if="loading" class="text-center p-5">
-      <b-spinner variant="primary" label="Loading..."></b-spinner>
-      <p class="mt-2">Loading results...</p>
+    <div v-if="loading">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5 g-3">
+        <div v-for="n in perPage" :key="n" class="col">
+          <SearchCard skeleton :variant="props.cardVariant || 'default'" />
+        </div>
+      </div>
     </div>
 
     <div v-else-if="error" class="text-center p-5">
@@ -129,7 +132,7 @@ const fetchAssets = async () => {
     error.value = e instanceof Error ? e.message : "An unknown error occurred";
     assets.value = [];
   } finally {
-    loading.value = false;
+    // loading.value = false;
   }
 };
 

@@ -1,19 +1,31 @@
 <template>
   <article
     class="search-card"
-    :class="{ 'search-card--square': variant === 'square' }"
+    :class="{
+      'search-card--square': variant === 'square',
+      'search-card--skeleton': skeleton,
+    }"
   >
-    <div class="search-card__thumbnail">
+    <div v-if="!skeleton" class="search-card__thumbnail">
       <div class="search-card__image-wrapper">
-        <img :src="getImageUrl()" :alt="icon.name" class="search-card__image" />
+        <img
+          :src="getImageUrl()"
+          :alt="icon?.name"
+          class="search-card__image"
+        />
       </div>
     </div>
+    <!-- Add this placeholder div when in skeleton state -->
+    <div
+      v-else
+      class="search-card__thumbnail search-card__thumbnail--skeleton"
+    ></div>
   </article>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-  icon: {
+  icon?: {
     id: number;
     uuid: string;
     asset: string;
@@ -24,6 +36,7 @@ const props = defineProps<{
       png_64: string;
       png_128: string;
       png_256: string;
+      thumb?: string;
     };
     color_codes: Array<{
       decimal_color: number;
@@ -31,6 +44,7 @@ const props = defineProps<{
     }>;
   };
   variant?: "default" | "square";
+  skeleton?: boolean;
 }>();
 
 // Set default variant if not provided
@@ -38,6 +52,8 @@ const variant = props.variant || "default";
 
 // Get the appropriate image URL based on asset type
 const getImageUrl = () => {
+  if (!props.icon) return "";
+
   // Handle 3D assets which use the 'thumb' property
   if (props.icon.asset === "3d" && props.icon.urls.thumb) {
     return props.icon.urls.thumb;
@@ -72,12 +88,26 @@ const getImageUrl = () => {
     aspect-ratio: 1/1;
   }
 
+  &--skeleton {
+    background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 37%, #f8f9fa 63%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+  }
+
+  &--square.search-card--skeleton {
+    aspect-ratio: 1/1;
+  }
+
   &__thumbnail {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &--skeleton {
+      /* Additional styles for skeleton thumbnail if needed */
+    }
   }
 
   &__image-wrapper {
@@ -95,6 +125,15 @@ const getImageUrl = () => {
     width: auto;
     height: auto;
     object-fit: contain;
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
   }
 }
 </style>
