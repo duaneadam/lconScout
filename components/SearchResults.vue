@@ -1,7 +1,15 @@
 <template>
-  <div class="search-results">
+  <div class="search-results px-3">
     <div v-if="loading">
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5 g-3">
+      <div
+        :class="[
+          'row',
+          props.assetType === 'icons'
+            ? 'row-cols-2 row-cols-md-4 row-cols-lg-8 row-cols-xl-10'
+            : 'row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5',
+          'g-3',
+        ]"
+      >
         <div v-for="n in perPage" :key="n" class="col">
           <SearchCard skeleton :variant="props.cardVariant || 'default'" />
         </div>
@@ -22,7 +30,13 @@
 
       <div
         v-else
-        class="row row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5 g-3b"
+        :class="[
+          'row',
+          props.assetType === 'icons'
+            ? 'row-cols-2 row-cols-md-4 row-cols-lg-8 row-cols-xl-10'
+            : 'row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5',
+          'g-3',
+        ]"
       >
         <div v-for="asset in assets" :key="asset.id" class="col">
           <SearchCard :icon="asset" :variant="props.cardVariant || 'default'" />
@@ -33,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import type { Ref } from "vue";
 
 // Types for the API response
@@ -67,7 +81,7 @@ const assets: Ref<Asset[]> = ref([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const currentPage = ref(1);
-const perPage = ref(30);
+const perPage = computed(() => (props.assetType === "icons" ? 60 : 30));
 const totalItems = ref(0);
 
 // Emits
@@ -132,7 +146,7 @@ const fetchAssets = async () => {
     error.value = e instanceof Error ? e.message : "An unknown error occurred";
     assets.value = [];
   } finally {
-    // loading.value = false;
+    loading.value = false;
   }
 };
 

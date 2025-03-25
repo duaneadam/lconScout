@@ -11,14 +11,12 @@
       </div>
       <div class="flex-grow-1">
         <AssetTabs @asset-type-changed="handleAssetTypeChange" />
-        <div class="p-3 rounded">
-          <SearchResults
-            :asset-type="currentAssetType"
-            :search-query="searchQuery"
-            :card-variant="cardVariant"
-            @total-updated="updateTotalItems"
-          />
-        </div>
+        <SearchResults
+          :asset-type="currentAssetType"
+          :search-query="searchQuery"
+          :card-variant="cardVariant"
+          @total-updated="updateTotalItems"
+        />
       </div>
     </div>
   </div>
@@ -30,24 +28,24 @@ defineProps<{
   subtitle: string;
   currentAssetType: string;
   searchQuery: string;
-  cardVariant?: 'default' | 'square';
+  cardVariant?: "default" | "square";
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:totalItems', total: number): void;
-  (e: 'assetTypeChanged', assetType: string): void;
-  (e: 'filterChanged', filter: any): void;
+  (e: "update:totalItems", total: number): void;
+  (e: "assetTypeChanged", assetType: string): void;
+  (e: "filterChanged", filter: any): void;
 }>();
 
 const updateTotalItems = (total: number) => {
-  emit('update:totalItems', total);
+  emit("update:totalItems", total);
 };
 
 const handleAssetTypeChange = (assetType: string) => {
-  emit('assetTypeChanged', assetType);
+  emit("assetTypeChanged", assetType);
 };
 
 const handleFilterChange = (filter: any) => {
-  emit('filterChanged', filter);
+  emit("filterChanged", filter);
 };
 </script>

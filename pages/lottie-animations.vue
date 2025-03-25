@@ -19,20 +19,16 @@ const updateTotalItems = (total: number) => {
 
 const {
   currentAssetType,
-  humanizeAssetType,
+  humanizedAssetType,
   handleAssetTypeChange,
   handleFilterChange,
 } = useSearchFilter("lottie-animations");
 const { searchQuery, performSearch } = useSearchQuery("lottie-animations");
 
-// Create a computed property for the humanized asset type
-const humanizedAssetType = computed(() =>
-  humanizeAssetType(currentAssetType.value)
-);
-
-const title = computed(() => `Lottie Animations (${totalItems.value})`);
-const subtitle = computed(
-  () => `Browse our collection of ${humanizedAssetType.value}`
+const { title, subtitle } = useSearchTitle(
+  searchQuery,
+  totalItems,
+  humanizedAssetType
 );
 
 useHead({

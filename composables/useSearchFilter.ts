@@ -1,5 +1,7 @@
 // composables/useAssetFilters.ts
 import type Filters from "~/types/search/filters";
+import { ref, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 export const useSearchFilter = (initialAssetType: string) => {
   const currentAssetType = ref(initialAssetType);
@@ -15,6 +17,8 @@ export const useSearchFilter = (initialAssetType: string) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
+
+  const humanizedAssetType = computed(() => humanizeAssetType(currentAssetType.value));
 
   // Handle asset type changes from AssetTabs component
   const handleAssetTypeChange = async (assetType: string) => {
@@ -41,5 +45,6 @@ export const useSearchFilter = (initialAssetType: string) => {
     humanizeAssetType,
     handleAssetTypeChange,
     handleFilterChange,
+    humanizedAssetType,
   };
 };

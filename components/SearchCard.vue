@@ -15,7 +15,7 @@
         />
       </div>
     </div>
-    <!-- Add this placeholder div when in skeleton state -->
+
     <div
       v-else
       class="search-card__thumbnail search-card__thumbnail--skeleton"

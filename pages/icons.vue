@@ -20,20 +20,16 @@ const updateTotalItems = (total: number) => {
 
 const {
   currentAssetType,
-  humanizeAssetType,
   handleAssetTypeChange,
   handleFilterChange,
+  humanizedAssetType,
 } = useSearchFilter("icons");
 const { searchQuery, performSearch } = useSearchQuery("icons");
 
-// Create a computed property for the humanized asset type
-const humanizedAssetType = computed(() =>
-  humanizeAssetType(currentAssetType.value)
-);
-
-const title = computed(() => `Icons (${totalItems.value})`);
-const subtitle = computed(
-  () => `Browse our collection of ${humanizedAssetType.value}`
+const { title, subtitle } = useSearchTitle(
+  searchQuery,
+  totalItems,
+  humanizedAssetType
 );
 
 useHead({
