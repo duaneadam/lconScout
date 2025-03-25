@@ -1,7 +1,21 @@
 import { defineEventHandler, getQuery } from "h3";
 
 export default defineEventHandler(async (event) => {
-  const { query, assetType, page, perPage, sort } = getQuery(event);
+  const {
+    query,
+    assetType,
+    page,
+    perPage,
+    sort,
+    color,
+    style,
+    license,
+    format,
+    category,
+    subcategory,
+    tag,
+    price,
+  } = getQuery(event);
 
   if (!assetType) {
     return {
@@ -30,7 +44,7 @@ export default defineEventHandler(async (event) => {
       break;
   }
 
-  const apiUrl = new URL("https://api.iconscout.com/v3/search");
+  const apiUrl = new URL("https://api.iconscout.com/v2/search");
 
   console.log("Raw query parameter:", query);
   console.log("Asset type parameter:", assetType);
@@ -44,11 +58,48 @@ export default defineEventHandler(async (event) => {
     apiUrl.searchParams.append("query", "");
     console.error("No query provided");
   }
+
+  // Required parameters
   apiUrl.searchParams.append("product_type", "item");
   apiUrl.searchParams.append("asset", normalizedAssetType.toString());
   apiUrl.searchParams.append("per_page", perPage?.toString() || "30");
   apiUrl.searchParams.append("page", page?.toString() || "1");
   apiUrl.searchParams.append("sort", sort?.toString() || "relevant");
+
+  // Always set price=free for Lottie animations
+  if (normalizedAssetType === "lottie") {
+    apiUrl.searchParams.append("price", "free");
+  } else if (price) {
+    apiUrl.searchParams.append("price", price.toString());
+  }
+
+  if (color) {
+    apiUrl.searchParams.append("color", color.toString().replace("#", ""));
+  }
+
+  if (style) {
+    apiUrl.searchParams.append("style", style.toString());
+  }
+
+  if (license) {
+    apiUrl.searchParams.append("license", license.toString());
+  }
+
+  if (format) {
+    apiUrl.searchParams.append("format", format.toString());
+  }
+
+  if (category) {
+    apiUrl.searchParams.append("category", category.toString());
+  }
+
+  if (subcategory) {
+    apiUrl.searchParams.append("subcategory", subcategory.toString());
+  }
+
+  if (tag) {
+    apiUrl.searchParams.append("tag", tag.toString());
+  }
 
   try {
     const clientId = process.env.NUXT_PUBLIC_ICONSCOUT_CLIENT_ID;
