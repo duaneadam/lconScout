@@ -11,6 +11,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@lottiefiles/dotlottie-vue": "^0.5.8",
+    "@lottiefiles/lottie-player": "^2.0.12",
     "@nuxt/fonts": "0.11.0",
     "@nuxt/image": "1.10.0",
     "@nuxt/scripts": "0.11.2",

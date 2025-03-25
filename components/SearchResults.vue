@@ -37,7 +37,10 @@
         ]"
       >
         <div v-for="asset in assets" :key="asset.id" class="col">
-          <SearchCard :icon="asset" :variant="props.cardVariant || 'default'" />
+          <SearchCard
+            :asset="asset"
+            :variant="props.cardVariant || 'default'"
+          />
         </div>
       </div>
 
@@ -77,16 +80,73 @@ type Asset = {
   asset: string;
   name: string;
   slug: string;
+  identifier: string;
   price: number;
   urls: {
-    png_64: string;
-    png_128: string;
-    png_256: string;
+    thumb?: string;
+    png_64?: string;
+    png_128?: string;
+    png_256?: string;
+    preview_image?: string;
+    original?: string;
+    png?: string;
+    lottie?: string;
+    json?: string;
   };
   color_codes: Array<{
     decimal_color: number;
     color_id: number;
   }>;
+  is_premium: boolean;
+  payable_price: number;
+  formats: Array<{
+    id: number;
+    name: string;
+    mime_type: string;
+  }>;
+  additional_informations?: {
+    stroked?: boolean;
+    background_type?: string;
+    iconscout_exclusive?: boolean;
+    nsfw?: boolean;
+    gltf_info?: {
+      is_verified: boolean;
+      has_glass_effect: boolean;
+      has_material_issue: boolean;
+    };
+    preview_frame?: number;
+    frame_rate?: number;
+    total_frames?: number;
+    is_canva_supported?: boolean;
+    is_thorvg_supported?: boolean;
+    is_creator_supported?: boolean;
+    version?: string;
+    generator?: string;
+    no_of_layers?: number;
+  };
+  contributor?: {
+    id: number;
+    name: string;
+    username: string;
+    urls: {
+      small: string;
+      normal: string;
+      large: string;
+    };
+  };
+};
+
+type APIResponse = {
+  status: string;
+  response: {
+    items: {
+      current_page: number;
+      data: Asset[];
+      total: number;
+      per_page: number;
+      last_page: number;
+    };
+  };
 };
 
 // Props
@@ -105,15 +165,14 @@ const currentPage = ref(1);
 const perPage = computed(() => (props.assetType === "icons" ? 60 : 30));
 const totalItems = ref(0);
 const loadMoreTrigger = ref<HTMLElement | null>(null);
-const isUserLoggedIn = ref(false); // TODO: Will be connected to Supabase later
+const isUserLoggedIn = ref(false);
 
-// Compute if there are more pages, considering the 2-page limit for non-logged in users
+// Compute if there are more pages
 const hasMorePages = computed(() => {
-  const hasMoreResults = assets.value.length < totalItems.value;
-  if (!isUserLoggedIn.value && assets.value.length >= perPage.value * 2) {
+  if (!isUserLoggedIn.value && currentPage.value >= 2) {
     return false;
   }
-  return hasMoreResults;
+  return assets.value.length < totalItems.value;
 });
 
 // Emits
@@ -129,12 +188,10 @@ watch(
     const [newQuery, newAssetType] = newValues;
     const [oldQuery, oldAssetType] = oldValues;
 
-    // Skip the initial watch trigger
     if (oldQuery === undefined && oldAssetType === undefined) {
       return;
     }
 
-    // Reset pagination and reload when search criteria change
     currentPage.value = 1;
     assets.value = [];
     await nextTick();
@@ -156,10 +213,13 @@ const fetchAssets = async (isNewSearch = false) => {
   try {
     let apiUrl = `/api/search?assetType=${props.assetType}&perPage=${perPage.value}&page=${currentPage.value}&sort=relevant`;
 
+    // Add price=free parameter for Lottie assets
+    if (props.assetType === "lottie") {
+      apiUrl += "&price=free";
+    }
+
     if (props.searchQuery && props.searchQuery.trim() !== "") {
       apiUrl += `&query=${encodeURIComponent(props.searchQuery.trim())}`;
-    } else {
-      console.log("No search query provided");
     }
 
     const response = await fetch(apiUrl);
@@ -168,20 +228,17 @@ const fetchAssets = async (isNewSearch = false) => {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as APIResponse;
 
-    if (data.status === "success" && data.response && data.response.items) {
+    if (data.status === "success" && data.response?.items) {
       if (isNewSearch) {
         assets.value = data.response.items.data;
       } else {
-        // Append new items to existing assets
         assets.value = [...assets.value, ...data.response.items.data];
       }
 
       totalItems.value = data.response.items.total;
       emit("total-updated", totalItems.value);
-    } else if (data.status === "error") {
-      throw new Error(data.message || "API returned an error");
     } else {
       throw new Error("Invalid API response format");
     }
@@ -196,50 +253,35 @@ const fetchAssets = async (isNewSearch = false) => {
   }
 };
 
-// Set up intersection observer
-const setupIntersectionObserver = () => {
-  if (!loadMoreTrigger.value) return;
-
-  observer = new IntersectionObserver(
-    (entries) => {
-      const [entry] = entries;
-      if (
-        entry.isIntersecting &&
-        hasMorePages.value &&
-        !loading.value &&
-        !loadingMore.value &&
-        !error.value
-      ) {
-        loadNextPage();
-      }
-    },
-    {
-      threshold: 0.1,
-      rootMargin: "200px", // Start loading before user reaches the end
-    }
-  );
-
-  observer.observe(loadMoreTrigger.value);
-};
-
 // Load next page of results
-const loadNextPage = () => {
-  if (!hasMorePages.value || loadingMore.value) return;
-
-  currentPage.value += 1;
-  fetchAssets(false);
+const loadNextPage = async () => {
+  if (loadingMore.value || !hasMorePages.value) return;
+  currentPage.value++;
+  await fetchAssets();
 };
 
 // Setup and cleanup
 onMounted(async () => {
   await fetchAssets(true);
   nextTick(() => {
-    setupIntersectionObserver();
+    observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          loadNextPage();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (loadMoreTrigger.value) {
+      observer.observe(loadMoreTrigger.value);
+    }
   });
 });
 
 onUnmounted(() => {
-  if (observer) {
+  if (observer && loadMoreTrigger.value) {
+    observer.unobserve(loadMoreTrigger.value);
     observer.disconnect();
   }
 });
