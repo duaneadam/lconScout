@@ -1,13 +1,13 @@
 <template>
-  <div class="search-results px-3">
-    <div v-if="loading">
+  <div class="search-results position-relative px-3">
+    <div v-if="loading && !loadingMore">
       <div
         :class="[
           'row',
           props.assetType === 'icons'
             ? 'row-cols-2 row-cols-md-4 row-cols-lg-8 row-cols-xl-10'
             : 'row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5',
-          'g-3',
+          'g-3b',
         ]"
       >
         <div v-for="n in perPage" :key="n" class="col">
@@ -16,11 +16,9 @@
       </div>
     </div>
 
-    <div v-else-if="error" class="text-center p-5">
+    <div v-else-if="error && assets.length === 0" class="text-center p-5">
       <p class="text-danger">{{ error }}</p>
-      <b-button variant="outline-primary" @click="fetchAssets"
-        >Try Again</b-button
-      >
+      <BButton variant="primary" @click="fetchAssets(true)">Try Again</BButton>
     </div>
 
     <div v-else>
@@ -35,19 +33,41 @@
           props.assetType === 'icons'
             ? 'row-cols-2 row-cols-md-4 row-cols-lg-8 row-cols-xl-10'
             : 'row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5',
-          'g-3',
+          'g-3b',
         ]"
       >
         <div v-for="asset in assets" :key="asset.id" class="col">
           <SearchCard :icon="asset" :variant="props.cardVariant || 'default'" />
         </div>
       </div>
+
+      <div v-if="loadingMore" class="text-center my-4">
+        <b-spinner small label="Loading..."></b-spinner>
+        <p class="mt-2">Loading more results...</p>
+      </div>
+
+      <div v-if="error && assets.length > 0" class="text-center my-4">
+        <p class="text-danger">{{ error }}</p>
+        <b-button variant="outline-primary" size="sm" @click="loadNextPage">
+          Try Loading More
+        </b-button>
+      </div>
+
+      <div ref="loadMoreTrigger" class="my-4 py-2"></div>
+
+      <div v-if="!hasMorePages && assets.length > 0" class="text-center my-4">
+        <Upsell v-if="!isUserLoggedIn && assets.length >= perPage * 2" />
+        <p v-else-if="!isUserLoggedIn && currentPage >= 2" class="text-muted">
+          Loading page 2...
+        </p>
+        <p v-else class="text-muted">End of results</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted, watch, nextTick, onUnmounted } from "vue";
 import type { Ref } from "vue";
 
 // Types for the API response
@@ -79,46 +99,65 @@ const props = defineProps<{
 // Component state
 const assets: Ref<Asset[]> = ref([]);
 const loading = ref(true);
+const loadingMore = ref(false);
 const error = ref<string | null>(null);
 const currentPage = ref(1);
 const perPage = computed(() => (props.assetType === "icons" ? 60 : 30));
 const totalItems = ref(0);
+const loadMoreTrigger = ref<HTMLElement | null>(null);
+const isUserLoggedIn = ref(false); // TODO: Will be connected to Supabase later
+
+// Compute if there are more pages, considering the 2-page limit for non-logged in users
+const hasMorePages = computed(() => {
+  const hasMoreResults = assets.value.length < totalItems.value;
+  if (!isUserLoggedIn.value && assets.value.length >= perPage.value * 2) {
+    return false;
+  }
+  return hasMoreResults;
+});
 
 // Emits
 const emit = defineEmits(["total-updated"]);
 
-// Watch for changes in props or current page
+// Intersection Observer
+let observer: IntersectionObserver | null = null;
+
+// Watch for changes in search query or asset type
 watch(
-  [() => props.searchQuery, () => props.assetType, currentPage],
+  [() => props.searchQuery, () => props.assetType],
   async (newValues, oldValues) => {
     const [newQuery, newAssetType] = newValues;
     const [oldQuery, oldAssetType] = oldValues;
 
-    // Skip the initial fetch if asset type is changing
-    if (oldAssetType && newAssetType !== oldAssetType) {
-      return; // Let the route change handle the fetch
+    // Skip the initial watch trigger
+    if (oldQuery === undefined && oldAssetType === undefined) {
+      return;
     }
 
-    // Wait for next tick to ensure component is ready
+    // Reset pagination and reload when search criteria change
+    currentPage.value = 1;
+    assets.value = [];
     await nextTick();
-    await fetchAssets();
-  },
-  { immediate: true }
+    await fetchAssets(true);
+  }
 );
 
-// Fetch assets from the API using our server endpoint
-const fetchAssets = async () => {
-  loading.value = true;
+// Fetch assets from the API
+const fetchAssets = async (isNewSearch = false) => {
+  if (isNewSearch) {
+    loading.value = true;
+    loadingMore.value = false;
+  } else {
+    loadingMore.value = true;
+  }
+
   error.value = null;
 
   try {
-    // More explicit query handling to prevent using asset type as fallback inappropriately
-    // Only pass query parameter if it's not empty, let server handle fallback logic
     let apiUrl = `/api/search?assetType=${props.assetType}&perPage=${perPage.value}&page=${currentPage.value}&sort=relevant`;
 
     if (props.searchQuery && props.searchQuery.trim() !== "") {
       apiUrl += `&query=${encodeURIComponent(props.searchQuery.trim())}`;
-      console.log("Using search query:", props.searchQuery);
     } else {
       console.log("No search query provided");
     }
@@ -132,10 +171,14 @@ const fetchAssets = async () => {
     const data = await response.json();
 
     if (data.status === "success" && data.response && data.response.items) {
-      assets.value = data.response.items.data;
-      totalItems.value = data.response.items.total;
+      if (isNewSearch) {
+        assets.value = data.response.items.data;
+      } else {
+        // Append new items to existing assets
+        assets.value = [...assets.value, ...data.response.items.data];
+      }
 
-      // Emit the total items count to update the title
+      totalItems.value = data.response.items.total;
       emit("total-updated", totalItems.value);
     } else if (data.status === "error") {
       throw new Error(data.message || "API returned an error");
@@ -144,20 +187,68 @@ const fetchAssets = async () => {
     }
   } catch (e) {
     error.value = e instanceof Error ? e.message : "An unknown error occurred";
-    assets.value = [];
+    if (isNewSearch) {
+      assets.value = [];
+    }
   } finally {
     loading.value = false;
+    loadingMore.value = false;
   }
 };
 
-// Handle page change
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+// Set up intersection observer
+const setupIntersectionObserver = () => {
+  if (!loadMoreTrigger.value) return;
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      const [entry] = entries;
+      if (
+        entry.isIntersecting &&
+        hasMorePages.value &&
+        !loading.value &&
+        !loadingMore.value &&
+        !error.value
+      ) {
+        loadNextPage();
+      }
+    },
+    {
+      threshold: 0.1,
+      rootMargin: "200px", // Start loading before user reaches the end
+    }
+  );
+
+  observer.observe(loadMoreTrigger.value);
 };
 
-// Fetch assets on component mount
-onMounted(() => {
-  fetchAssets();
+// Load next page of results
+const loadNextPage = () => {
+  if (!hasMorePages.value || loadingMore.value) return;
+
+  currentPage.value += 1;
+  fetchAssets(false);
+};
+
+// Setup and cleanup
+onMounted(async () => {
+  await fetchAssets(true);
+  nextTick(() => {
+    setupIntersectionObserver();
+  });
+});
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect();
+  }
 });
 </script>
+
+<style scoped>
+/* Optional: Make the load more trigger invisible but take up space */
+.load-more-trigger {
+  height: 10px;
+  opacity: 0;
+}
+</style>

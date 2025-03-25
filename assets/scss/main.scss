@@ -28,3 +28,22 @@ body,
   --body: #{$dark};
   --line-height-base: #{$line-height-base}rem;
 }
+
+@include media-breakpoint-up(lg) {
+  .row-cols-lg-8 > * {
+    flex: 0 0 percentage(1 / 8);
+    max-width: percentage(1 / 8);
+  }
+}
+
+// For xl breakpoint: row-cols-xl-10
+@include media-breakpoint-up(xl) {
+  .row-cols-xl-10 > * {
+    flex: 0 0 percentage(1 / 10);
+    max-width: percentage(1 / 10);
+  }
+}
+
+.bg-white-99 {
+  background-color: rgba(255, 255, 255, 0.99) !important;
+}
