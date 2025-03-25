@@ -11,9 +11,7 @@ export const useSearchTitle = (
   // Computed properties for SearchHeader
   const title = computed(() => {
     const query = searchQuery.value ? `${searchQuery.value} ` : "";
-    return `${formatNumber(totalItems.value)} ${query}${
-      resolvedAssetType.value
-    }`;
+    return `${formatNumber(totalItems.value)} ${query}${resolvedAssetType.value}`;
   });
 
   const subtitle = computed(() => {

@@ -11,11 +11,7 @@
 </template>
 
 <script setup lang="ts">
-const totalItems = ref(0);
-
-const updateTotalItems = (total: number) => {
-  totalItems.value = total;
-};
+const { totalItems, updateTotalItems } = await useInitialSearch("all-assets");
 
 const {
   currentAssetType,

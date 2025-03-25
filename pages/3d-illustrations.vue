@@ -11,13 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { capitalizeWords } from "~/utils/string";
-
-const totalItems = ref(0);
-
-const updateTotalItems = (total: number) => {
-  totalItems.value = total;
-};
+const { totalItems, updateTotalItems } = await useInitialSearch(
+  "3d-illustrations"
+);
 
 const {
   currentAssetType,
@@ -38,7 +34,22 @@ useHead({
     () =>
       `${formatNumber(totalItems.value)} ${capitalizeWords(
         searchQuery.value
-      )} 3D Illustrations - Free Download in PNG, BLEND, glTF | IconScout`
+      )} ${
+        humanizedAssetType.value
+      } - Free Download in PNG, BLEND, glTF | IconScout`
   ),
+  meta: [
+    {
+      name: "description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(totalItems.value)} ${capitalizeWords(
+            searchQuery.value
+          )} ${
+            humanizedAssetType.value
+          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`
+      ),
+    },
+  ],
 });
 </script>
