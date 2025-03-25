@@ -2,29 +2,46 @@
   <SearchLayout
     :title="title"
     :subtitle="subtitle"
-    :current-asset-type="currentAssetType"
-    :search-query="searchQuery"
-    @update:total-items="updateTotalItems"
-    @asset-type-changed="handleAssetTypeChange"
-    @filter-changed="handleFilterChange"
+    :current-asset-type="filters.assetType"
+    :search-query="query"
+    card-variant="square"
   />
 </template>
 
 <script setup lang="ts">
-const { totalItems, updateTotalItems } = await useInitialSearch(
-  "3d-illustrations"
+const route = useRoute();
+const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
+  useSearchStore()
+);
+const { fetchResults, updateQuery } = useSearchStore();
+
+// Update query from route params if present
+onMounted(() => {
+  if (route.params.query) {
+    updateQuery(decodeURIComponent(route.params.query as string));
+  } else {
+    updateQuery("");
+  }
+  
+  // Fetch initial results
+  fetchResults("3d-illustrations");
+});
+
+// Watch for route parameter changes
+watch(
+  () => route.params.query,
+  (newQuery) => {
+    if (newQuery) {
+      updateQuery(decodeURIComponent(newQuery as string));
+    } else {
+      updateQuery("");
+    }
+    fetchResults("3d-illustrations");
+  }
 );
 
-const {
-  currentAssetType,
-  humanizedAssetType,
-  handleAssetTypeChange,
-  handleFilterChange,
-} = useSearchFilter("3d-illustrations");
-const { searchQuery, performSearch } = useSearchQuery("3d-illustrations");
-
 const { title, subtitle } = useSearchTitle(
-  searchQuery,
+  query,
   totalItems,
   humanizedAssetType
 );
@@ -33,7 +50,7 @@ useHead({
   title: computed(
     () =>
       `${formatNumber(totalItems.value)} ${capitalizeWords(
-        searchQuery.value
+        query.value
       )} ${
         humanizedAssetType.value
       } - Free Download in PNG, BLEND, glTF | IconScout`
@@ -44,7 +61,7 @@ useHead({
       content: computed(
         () =>
           `Free Download ${formatNumber(totalItems.value)} ${capitalizeWords(
-            searchQuery.value
+            query.value
           )} ${
             humanizedAssetType.value
           } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`

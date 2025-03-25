@@ -183,10 +183,6 @@ const getLottieUrl = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &--skeleton {
-      /* Additional styles for skeleton thumbnail if needed */
-    }
   }
 
   &__image-wrapper {

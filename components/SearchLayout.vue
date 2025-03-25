@@ -4,10 +4,7 @@
 
     <div class="d-flex">
       <div class="sidebar-container" style="width: 280px">
-        <SearchSidebar
-          :external-asset-type="currentAssetType"
-          @filter-changed="handleFilterChange"
-        />
+        <SearchSidebar />
       </div>
       <div class="flex-grow-1">
         <AssetTabs @asset-type-changed="handleAssetTypeChange" />

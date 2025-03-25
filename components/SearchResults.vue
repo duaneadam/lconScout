@@ -72,6 +72,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick, onUnmounted } from "vue";
 import type { Ref } from "vue";
+import { useSearchStore } from "~/stores/search";
 
 // Types for the API response
 type Asset = {
@@ -157,15 +158,18 @@ const props = defineProps<{
 }>();
 
 // Component state
-const assets: Ref<Asset[]> = ref([]);
+const assets = ref<Asset[]>([]);
 const loading = ref(true);
 const loadingMore = ref(false);
 const error = ref<string | null>(null);
 const currentPage = ref(1);
 const perPage = computed(() => (props.assetType === "icons" ? 60 : 30));
-const totalItems = ref(0);
 const loadMoreTrigger = ref<HTMLElement | null>(null);
-const isUserLoggedIn = ref(false);
+const isUserLoggedIn = ref(false); // TODO
+
+// Use search store
+const { totalItems, results: storeResults } = storeToRefs(useSearchStore());
+const { fetchResults, updateQuery } = useSearchStore();
 
 // Compute if there are more pages
 const hasMorePages = computed(() => {
@@ -174,9 +178,6 @@ const hasMorePages = computed(() => {
   }
   return assets.value.length < totalItems.value;
 });
-
-// Emits
-const emit = defineEmits(["total-updated"]);
 
 // Intersection Observer
 let observer: IntersectionObserver | null = null;
@@ -211,36 +212,22 @@ const fetchAssets = async (isNewSearch = false) => {
   error.value = null;
 
   try {
-    let apiUrl = `/api/search?assetType=${props.assetType}&perPage=${perPage.value}&page=${currentPage.value}&sort=relevant`;
-
-    // Add price=free parameter for Lottie assets
-    if (props.assetType === "lottie") {
-      apiUrl += "&price=free";
+    // Update the query in the store if needed
+    if (props.searchQuery) {
+      updateQuery(props.searchQuery);
     }
 
-    if (props.searchQuery && props.searchQuery.trim() !== "") {
-      apiUrl += `&query=${encodeURIComponent(props.searchQuery.trim())}`;
-    }
+    // Use the store's fetchResults function
+    await fetchResults(props.assetType, {
+      perPage: perPage.value,
+      page: currentPage.value,
+      sort: "relevant",
+    });
 
-    const response = await fetch(apiUrl);
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    const data = (await response.json()) as APIResponse;
-
-    if (data.status === "success" && data.response?.items) {
-      if (isNewSearch) {
-        assets.value = data.response.items.data;
-      } else {
-        assets.value = [...assets.value, ...data.response.items.data];
-      }
-
-      totalItems.value = data.response.items.total;
-      emit("total-updated", totalItems.value);
+    if (isNewSearch) {
+      assets.value = storeResults.value;
     } else {
-      throw new Error("Invalid API response format");
+      assets.value = [...assets.value, ...storeResults.value];
     }
   } catch (e) {
     error.value = e instanceof Error ? e.message : "An unknown error occurred";

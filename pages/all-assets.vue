@@ -2,40 +2,71 @@
   <SearchLayout
     :title="title"
     :subtitle="subtitle"
-    :current-asset-type="currentAssetType"
-    :search-query="searchQuery"
-    @update:total-items="updateTotalItems"
-    @asset-type-changed="handleAssetTypeChange"
-    @filter-changed="handleFilterChange"
+    :current-asset-type="filters.assetType"
+    :search-query="query"
+    card-variant="square"
   />
 </template>
 
 <script setup lang="ts">
-const { totalItems, updateTotalItems } = await useInitialSearch("all-assets");
+const route = useRoute();
+const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
+  useSearchStore()
+);
+const { fetchResults, updateQuery } = useSearchStore();
 
-const {
-  currentAssetType,
-  humanizedAssetType,
-  handleAssetTypeChange,
-  handleFilterChange,
-} = useSearchFilter("all-assets");
-const { searchQuery, performSearch } = useSearchQuery("all-assets");
+// Update query from route params if present
+onMounted(() => {
+  if (route.params.query) {
+    updateQuery(decodeURIComponent(route.params.query as string));
+  } else {
+    updateQuery("");
+  }
+  
+  // Fetch initial results
+  fetchResults("all-assets");
+});
+
+// Watch for route parameter changes
+watch(
+  () => route.params.query,
+  (newQuery) => {
+    if (newQuery) {
+      updateQuery(decodeURIComponent(newQuery as string));
+    } else {
+      updateQuery("");
+    }
+    fetchResults("all-assets");
+  }
+);
 
 const { title, subtitle } = useSearchTitle(
-  searchQuery,
+  query,
   totalItems,
   humanizedAssetType
 );
 
-/**
- * Only all assets does not have totalItems as seen on IconScout website
- */
 useHead({
   title: computed(
     () =>
-      `${capitalizeWords(
-        searchQuery.value
-      )} Design Assets - Free Download in SVG, PNG, BLEND, GIF | IconScout`
+      `${formatNumber(totalItems.value)} ${capitalizeWords(
+        query.value
+      )} ${
+        humanizedAssetType.value
+      } - Free Download | IconScout`
   ),
+  meta: [
+    {
+      name: "description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(totalItems.value)} ${capitalizeWords(
+            query.value
+          )} ${
+            humanizedAssetType.value
+          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`
+      ),
+    },
+  ],
 });
 </script>
