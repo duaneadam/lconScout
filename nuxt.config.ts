@@ -16,5 +16,5 @@ export default defineNuxtConfig({
 
   css: ["@/assets/scss/main.scss"],
 
-  plugins: ["@/plugins/unicons.js"],
+  plugins: ["@/plugins/unicons.client.js"],
 });
