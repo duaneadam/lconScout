@@ -24,7 +24,6 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  // Add early return for blank query
   if (!query || query.toString().trim() === "") {
     return {
       status: "error",
@@ -70,39 +69,6 @@ export default defineEventHandler(async (event) => {
     apiUrl.searchParams.append("price", price.toString());
   }
 
-  if (color) {
-    apiUrl.searchParams.append("color", color.toString().replace("#", ""));
-  }
-
-  if (style) {
-    apiUrl.searchParams.append("style", style.toString());
-  }
-
-  if (license) {
-    apiUrl.searchParams.append("license", license.toString());
-  }
-
-  if (format) {
-    apiUrl.searchParams.append("format", format.toString());
-  }
-
-  if (category) {
-    apiUrl.searchParams.append("category", category.toString());
-  }
-
-  if (subcategory) {
-    apiUrl.searchParams.append("subcategory", subcategory.toString());
-  }
-
-  if (tag) {
-    apiUrl.searchParams.append("tag", tag.toString());
-  }
-
-  // Handle the exclude parameter (IconScout Exclusive)
-  if (exclude && exclude.toString() === "true") {
-    apiUrl.searchParams.append("iconscout_exclusive", "true");
-  }
-
   try {
     const clientId = process.env.NUXT_PUBLIC_ICONSCOUT_CLIENT_ID;
 
@@ -120,7 +86,6 @@ export default defineEventHandler(async (event) => {
 
     console.info("Making request to IconScout API:", apiUrl.toString());
 
-    // Make request to IconScout API
     const response = await fetch(apiUrl.toString(), {
       headers: {
         Accept: "application/json",
@@ -131,7 +96,23 @@ export default defineEventHandler(async (event) => {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    // Transform the response based on product_type
+    if (view === 'pack') {
+      return {
+        status: data.status,
+        response: {
+          items: {
+            current_page: data.response.packs.current_page,
+            data: data.response.packs.data,
+            total: data.response.packs.total || data.response.packs.data.length,
+          }
+        }
+      };
+    }
+
+    return data;
   } catch (error) {
     console.error("Error fetching from IconScout API:", error);
     return {

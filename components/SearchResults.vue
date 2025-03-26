@@ -70,10 +70,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, nextTick, onUnmounted } from "vue";
-import { useSearchStore } from "~/stores/search";
-
-// Types for the API response
 type Asset = {
   id: number;
   uuid: string;
@@ -157,7 +153,6 @@ const props = defineProps<{
 }>();
 
 // Component state
-const assets = ref<Asset[]>([]);
 const loading = ref(true);
 const loadingMore = ref(false);
 const error = ref<string | null>(null);
@@ -167,7 +162,7 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
 const isUserLoggedIn = ref(false); // TODO
 
 // Use search store
-const { totalItems, results: storeResults } = storeToRefs(useSearchStore());
+const { totalItems, results: assets, filters } = storeToRefs(useSearchStore());
 const { fetchResults, updateQuery } = useSearchStore();
 
 // Compute if there are more pages
@@ -183,20 +178,18 @@ let observer: IntersectionObserver | null = null;
 
 // Watch for changes in search query or asset type
 watch(
-  [() => props.searchQuery, () => props.assetType],
+  [() => props.searchQuery, () => filters.value],
   async (newValues, oldValues) => {
-    const [newQuery, newAssetType] = newValues;
-    const [oldQuery, oldAssetType] = oldValues;
+    const [newQuery, newFilters] = newValues;
+    const [oldQuery, oldFilters] = oldValues;
 
-    if (oldQuery === undefined && oldAssetType === undefined) {
+    if (oldQuery === undefined && oldFilters === undefined) {
       return;
     }
 
     currentPage.value = 1;
-    assets.value = [];
-    await nextTick();
-    await fetchAssets(true);
-  }
+  },
+  { deep: true }
 );
 
 // Fetch assets from the API
@@ -222,17 +215,8 @@ const fetchAssets = async (isNewSearch = false) => {
       page: currentPage.value,
       sort: "relevant",
     });
-
-    if (isNewSearch) {
-      assets.value = storeResults.value;
-    } else {
-      assets.value = [...assets.value, ...storeResults.value];
-    }
   } catch (e) {
     error.value = e instanceof Error ? e.message : "An unknown error occurred";
-    if (isNewSearch) {
-      assets.value = [];
-    }
   } finally {
     loading.value = false;
     loadingMore.value = false;

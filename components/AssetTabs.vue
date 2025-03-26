@@ -43,7 +43,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const { filters } = storeToRefs(useSearchStore());
-const { fetchResults, updateAssetType } = useSearchStore();
+const { updateAssetType } = useSearchStore();
 
 const searchQuery = computed(() => {
   if (route.params.query) {
@@ -54,7 +54,6 @@ const searchQuery = computed(() => {
 
 function handleNavClick(assetType: string) {
   updateAssetType(assetType);
-  fetchResults(assetType);
 }
 </script>
 

@@ -10,7 +10,11 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/scripts",
     "@bootstrap-vue-next/nuxt",
+    "nuxt-icon",
+    "@pinia/nuxt",
   ],
 
   css: ["@/assets/scss/main.scss"],
+
+  plugins: ["@/plugins/unicons.js"],
 });
