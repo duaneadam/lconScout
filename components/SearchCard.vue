@@ -13,7 +13,6 @@
 
     <div v-if="!skeleton" class="search-card__thumbnail">
       <div class="search-card__image-wrapper">
-        <!-- For Lottie animations -->
         <template v-if="asset?.asset === 'lottie'">
           <!-- DotLottieVue player -->
           <DotLottieVue
@@ -25,6 +24,7 @@
             :playOnHover="false"
             class="search-card__lottie"
           />
+          <!-- end DotLottieVue player -->
 
           <!-- LottiePlayer component -->
           <lottie-player
@@ -59,18 +59,6 @@
 
 <script setup lang="ts">
 import { DotLottieVue } from "@lottiefiles/dotlottie-vue";
-import { useLottieFeatureFlag } from "~/composables/useLottieFeatureFlag";
-import { onMounted, ref, defineAsyncComponent, computed } from "vue";
-
-// Import LottiePlayer component only on client-side
-const LottiePlayer = defineAsyncComponent(() =>
-  import("@lottiefiles/lottie-player").then(() => {
-    // Return a dummy component that will be replaced by the web component
-    return {
-      template: "<div></div>",
-    };
-  })
-);
 
 const props = defineProps<{
   asset?: {
@@ -88,7 +76,7 @@ const props = defineProps<{
       png_256?: string;
       preview_image?: string;
       lottie?: string;
-      json?: string;
+      original?: string;
     };
     color_codes: Array<{
       decimal_color: number;
@@ -159,7 +147,7 @@ const lottieUrl = computed(() => {
 
   // For LottieFiles player, always use JSON format
   if (playerType.value === "lottiefiles") {
-    return props.asset.urls.json || "";
+    return props.asset.urls.original || "";
   }
 
   // For DotLottie player, prefer .lottie format but fallback to JSON if needed
