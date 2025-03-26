@@ -15,16 +15,13 @@ const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
 );
 const { fetchResults, updateQuery } = useSearchStore();
 
-// Update query from route params if present
-onMounted(() => {
+// Fetch initial data
+// For SEO, needed to fill the meta tags and title
+const { data } = await useAsyncData("icons-search", async () => {
   if (route.params.query) {
     updateQuery(decodeURIComponent(route.params.query as string));
-  } else {
-    updateQuery("");
   }
-
-  // Fetch initial results
-  fetchResults("icons");
+  return fetchResults("icons");
 });
 
 // Watch for route parameter changes
@@ -33,8 +30,6 @@ watch(
   (newQuery) => {
     if (newQuery) {
       updateQuery(decodeURIComponent(newQuery as string));
-    } else {
-      updateQuery("");
     }
     fetchResults("icons");
   }

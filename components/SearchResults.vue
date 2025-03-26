@@ -1,5 +1,5 @@
 <template>
-  <div class="search-results position-relative px-3">
+  <div class="search-results position-relative px-10b">
     <div v-if="loading && !loadingMore">
       <div
         :class="[
@@ -71,7 +71,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick, onUnmounted } from "vue";
-import type { Ref } from "vue";
 import { useSearchStore } from "~/stores/search";
 
 // Types for the API response

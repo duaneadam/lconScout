@@ -13,12 +13,22 @@ export default defineEventHandler(async (event) => {
     subcategory,
     tag,
     price,
+    view,
+    exclude,
   } = getQuery(event);
 
   if (!assetType) {
     return {
       status: "error",
       message: "Asset type is required",
+    };
+  }
+
+  // Add early return for blank query
+  if (!query || query.toString().trim() === "") {
+    return {
+      status: "error",
+      message: "Search query is required",
     };
   }
 
@@ -44,30 +54,19 @@ export default defineEventHandler(async (event) => {
 
   const apiUrl = new URL("https://api.iconscout.com/v2/search");
 
-  console.log("Raw query parameter:", query);
-  console.log("Asset type parameter:", assetType);
-
-  // Handle query parameter - avoid using asset type as query (NOT SUPPORTED BY API)
-  if (query !== undefined && query !== null && query.toString().trim() !== "") {
-    // If query exists, use it
-    apiUrl.searchParams.append("query", query.toString().trim());
-    console.log("Using search query:", query.toString().trim());
-  } else {
-    apiUrl.searchParams.append("query", "");
-    console.error("No query provided");
-  }
+  apiUrl.searchParams.append("query", query.toString().trim());
 
   // Required parameters
-  apiUrl.searchParams.append("product_type", "item");
+  apiUrl.searchParams.append("product_type", view || "item");
   apiUrl.searchParams.append("asset", normalizedAssetType.toString());
   apiUrl.searchParams.append("per_page", perPage?.toString() || "30");
   apiUrl.searchParams.append("page", page?.toString() || "1");
   apiUrl.searchParams.append("sort", sort?.toString() || "relevant");
 
-  // Always set price=free for Lottie animations
+  // Always set price=free for Lottie animations else there is no .json or .lottie
   if (normalizedAssetType === "lottie") {
     apiUrl.searchParams.append("price", "free");
-  } else if (price) {
+  } else if (price && price.toString() !== "all") {
     apiUrl.searchParams.append("price", price.toString());
   }
 
@@ -99,6 +98,11 @@ export default defineEventHandler(async (event) => {
     apiUrl.searchParams.append("tag", tag.toString());
   }
 
+  // Handle the exclude parameter (IconScout Exclusive)
+  if (exclude && exclude.toString() === "true") {
+    apiUrl.searchParams.append("iconscout_exclusive", "true");
+  }
+
   try {
     const clientId = process.env.NUXT_PUBLIC_ICONSCOUT_CLIENT_ID;
 
@@ -114,7 +118,7 @@ export default defineEventHandler(async (event) => {
 
     apiUrl.searchParams.append("client_id", clientId);
 
-    console.log("Making request to IconScout API:", apiUrl.toString());
+    console.info("Making request to IconScout API:", apiUrl.toString());
 
     // Make request to IconScout API
     const response = await fetch(apiUrl.toString(), {

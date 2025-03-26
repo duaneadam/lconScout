@@ -1,30 +1,34 @@
 <template>
-  <SearchLayout
-    :title="title"
-    :subtitle="subtitle"
-    :current-asset-type="filters.assetType"
-    :search-query="query"
-    card-variant="square"
-  />
+  <div>
+    <SearchLayout
+      :title="title"
+      :subtitle="subtitle"
+      :current-asset-type="filters.assetType"
+      :search-query="query"
+      card-variant="square"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, watch, computed } from "vue";
+import { storeToRefs } from "pinia";
+import { useSearchStore } from "~/stores/search";
+import { useSearchTitle } from "~/composables/useSearchTitle";
+import { useAsyncData } from "nuxt/app";
+
 const route = useRoute();
 const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
   useSearchStore()
 );
 const { fetchResults, updateQuery } = useSearchStore();
 
-// Update query from route params if present
-onMounted(() => {
+// Fetch initial data
+await useAsyncData('lottie-search', async () => {
   if (route.params.query) {
     updateQuery(decodeURIComponent(route.params.query as string));
-  } else {
-    updateQuery("");
   }
-  
-  // Fetch initial results
-  fetchResults("lottie-animations");
+  return fetchResults("lottie");
 });
 
 // Watch for route parameter changes
@@ -33,10 +37,8 @@ watch(
   (newQuery) => {
     if (newQuery) {
       updateQuery(decodeURIComponent(newQuery as string));
-    } else {
-      updateQuery("");
     }
-    fetchResults("lottie-animations");
+    fetchResults("lottie");
   }
 );
 
@@ -49,9 +51,7 @@ const { title, subtitle } = useSearchTitle(
 useHead({
   title: computed(
     () =>
-      `${formatNumber(totalItems.value)} ${capitalizeWords(
-        query.value
-      )} ${
+      `${formatNumber(totalItems.value)} ${capitalizeWords(query.value)} ${
         humanizedAssetType.value
       } - Free Download in JSON | IconScout`
   ),

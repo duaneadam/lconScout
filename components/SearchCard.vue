@@ -4,6 +4,7 @@
     :class="{
       'search-card--square': variant === 'square',
       'search-card--skeleton': skeleton,
+      'search-card--withOverlay': withOverlay,
     }"
   >
     <div class="search-card__overlay">
@@ -13,20 +14,36 @@
     <div v-if="!skeleton" class="search-card__thumbnail">
       <div class="search-card__image-wrapper">
         <!-- For Lottie animations -->
-        <DotLottieVue
-          v-if="asset?.asset === 'lottie'"
-          ref="lottiePlayer"
-          :src="getLottieUrl()"
-          :autoplay="true"
-          :loop="true"
-          :playOnHover="false"
-          class="search-card__lottie"
-        />
+        <template v-if="asset?.asset === 'lottie'">
+          <!-- DotLottieVue player -->
+          <DotLottieVue
+            v-if="playerType === 'dotlottie'"
+            ref="dotLottiePlayer"
+            :src="lottieUrl"
+            :autoplay="true"
+            :loop="true"
+            :playOnHover="false"
+            class="search-card__lottie"
+          />
+
+          <!-- LottiePlayer component -->
+          <lottie-player
+            v-else
+            ref="lottieFilesPlayer"
+            :src="lottieUrl"
+            background="transparent"
+            speed="1"
+            style="width: 100%; height: 100%"
+            loop
+            autoplay
+            class="search-card__lottie"
+          ></lottie-player>
+        </template>
 
         <!-- For other asset types or fallback -->
         <img
           v-else
-          :src="getImageUrl()"
+          :src="imageUrl"
           :alt="asset?.name"
           class="search-card__image"
         />
@@ -42,6 +59,18 @@
 
 <script setup lang="ts">
 import { DotLottieVue } from "@lottiefiles/dotlottie-vue";
+import { useLottieFeatureFlag } from "~/composables/useLottieFeatureFlag";
+import { onMounted, ref, defineAsyncComponent, computed } from "vue";
+
+// Import LottiePlayer component only on client-side
+const LottiePlayer = defineAsyncComponent(() =>
+  import("@lottiefiles/lottie-player").then(() => {
+    // Return a dummy component that will be replaced by the web component
+    return {
+      template: "<div></div>",
+    };
+  })
+);
 
 const props = defineProps<{
   asset?: {
@@ -80,9 +109,19 @@ const props = defineProps<{
   };
   variant?: "default" | "square";
   skeleton?: boolean;
+  withOverlay?: boolean;
 }>();
 
-const lottiePlayer = ref<InstanceType<typeof DotLottieVue> | null>(null);
+const { playerType } = useLottieFeatureFlag();
+const dotLottiePlayer = ref<InstanceType<typeof DotLottieVue> | null>(null);
+const lottieFilesPlayer = ref<any>(null);
+
+// Register the lottie-player web component on client-side only
+onMounted(() => {
+  if (typeof window !== "undefined" && !customElements.get("lottie-player")) {
+    import("@lottiefiles/lottie-player");
+  }
+});
 
 // Check if asset has Lottie format
 const hasLottieFormat = (asset: typeof props.asset) => {
@@ -92,7 +131,7 @@ const hasLottieFormat = (asset: typeof props.asset) => {
 };
 
 // Get the image URL based on asset type
-const getImageUrl = () => {
+const imageUrl = computed(() => {
   if (!props.asset) return "";
 
   // For Lottie animations that can't be played
@@ -112,13 +151,20 @@ const getImageUrl = () => {
     props.asset.urls.png_64 ||
     ""
   );
-};
+});
 
 // Get the Lottie URL
-const getLottieUrl = () => {
+const lottieUrl = computed(() => {
   if (!props.asset || props.asset.asset !== "lottie") return "";
-  return props.asset.urls.json || props.asset.urls.lottie || "";
-};
+
+  // For LottieFiles player, always use JSON format
+  if (playerType.value === "lottiefiles") {
+    return props.asset.urls.json || "";
+  }
+
+  // For DotLottie player, prefer .lottie format but fallback to JSON if needed
+  return props.asset.urls.lottie || props.asset.urls.json || "";
+});
 </script>
 
 <style scoped lang="scss">
@@ -136,7 +182,7 @@ const getLottieUrl = () => {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
 
-  &:hover {
+  &--withOverlay {
     .search-card__overlay {
       opacity: 1;
     }

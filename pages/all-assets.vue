@@ -15,16 +15,12 @@ const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
 );
 const { fetchResults, updateQuery } = useSearchStore();
 
-// Update query from route params if present
-onMounted(() => {
+// Fetch initial data
+await useAsyncData("all-assets-search", async () => {
   if (route.params.query) {
     updateQuery(decodeURIComponent(route.params.query as string));
-  } else {
-    updateQuery("");
   }
-  
-  // Fetch initial results
-  fetchResults("all-assets");
+  return fetchResults("all");
 });
 
 // Watch for route parameter changes
@@ -33,10 +29,8 @@ watch(
   (newQuery) => {
     if (newQuery) {
       updateQuery(decodeURIComponent(newQuery as string));
-    } else {
-      updateQuery("");
     }
-    fetchResults("all-assets");
+    fetchResults("all");
   }
 );
 
@@ -49,9 +43,7 @@ const { title, subtitle } = useSearchTitle(
 useHead({
   title: computed(
     () =>
-      `${formatNumber(totalItems.value)} ${capitalizeWords(
-        query.value
-      )} ${
+      `${formatNumber(totalItems.value)} ${capitalizeWords(query.value)} ${
         humanizedAssetType.value
       } - Free Download | IconScout`
   ),

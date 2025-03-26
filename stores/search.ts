@@ -1,6 +1,5 @@
 interface SearchFilters {
-  exclude: boolean;
-  price: "free" | "premium";
+  price: "free" | "premium" | "all";
   assetType:
     | "all-assets"
     | "icons"
@@ -8,15 +7,16 @@ interface SearchFilters {
     | "3d-illustrations"
     | "lottie-animations";
   view: "item" | "pack";
+  sortBy: "popular" | "latest" | "featured" | "relevant";
 }
 
 export const useSearchStore = defineStore("search", () => {
   const query = ref("");
   const filters = ref<SearchFilters>({
-    exclude: false,
     price: "premium",
     assetType: "all-assets",
     view: "item",
+    sortBy: "relevant",
   });
   const results = ref([]);
   const totalItems = ref(0);
@@ -28,6 +28,21 @@ export const useSearchStore = defineStore("search", () => {
   function updateAssetType(assetType: string) {
     filters.value.assetType = assetType;
     fetchResults(assetType);
+  }
+
+  function updateTotalItems(count: number) {
+    totalItems.value = count;
+  }
+
+  function resetFilters() {
+    filters.value = {
+      price: "premium",
+      assetType: "all-assets",
+      view: "item",
+      sortBy: "relevant",
+    };
+    // Fetch results with reset filters
+    fetchResults(filters.value.assetType);
   }
 
   // Convert kebab-case to human-readable format
@@ -47,11 +62,17 @@ export const useSearchStore = defineStore("search", () => {
     humanizeAssetType(filters.value.assetType)
   );
 
-  async function fetchResults(assetType: string) {
+  async function fetchResults(
+    assetType: string,
+    options?: { page?: number; perPage?: number; sort?: string }
+  ) {
     const response = await $fetch("/api/search", {
       params: {
-        q: query.value,
+        query: query.value,
         assetType,
+        page: options?.page || 1,
+        perPage: options?.perPage || 30,
+        sort: options?.sort || filters.value.sortBy || "relevant",
         ...filters.value,
       },
     });
@@ -66,8 +87,10 @@ export const useSearchStore = defineStore("search", () => {
     totalItems,
     updateQuery,
     updateAssetType,
+    updateTotalItems,
     fetchResults,
     results,
     humanizedAssetType,
+    resetFilters,
   };
 });

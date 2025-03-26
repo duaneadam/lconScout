@@ -38,6 +38,21 @@ onUnmounted(() => {
 
 <template>
   <footer class="footer fs-sm">
+    <header class="footer__header">
+      <div class="container py-6b">
+        <NuxtImg
+          src="/images/iconscout-logo.svg"
+          alt="IconScout"
+          class="footer__logo me-6b"
+        />
+        <span>Design Resource Marketplace</span>
+      </div>
+
+      <div class="container">
+        <div class="footer__header-line"></div>
+      </div>
+    </header>
+
     <div class="footer__content">
       <div class="container py-5">
         <div class="row row-cols-xl-5">
@@ -220,6 +235,19 @@ onUnmounted(() => {
             <h5 class="footer__heading mb-3">Get IconScout for desktop</h5>
 
             <h5 class="footer__heading mb-3">Get LottieFiles mobile app</h5>
+
+            <div class="d-flex mb-6b">
+              <NuxtImg
+                class="footer__marketplace-image me-4b"
+                src="/images/apple-app-store.svg"
+              />
+              <NuxtImg
+                class="footer__marketplace-image"
+                src="/images/google-play-store.svg"
+              />
+            </div>
+
+            <h5 class="footer__heading mb-3">Follow Us</h5>
           </div>
         </div>
       </div>
@@ -245,7 +273,7 @@ onUnmounted(() => {
           >
             <span class="d-flex align-items-center">
               <Icon name="uis:lock" size="22" class="me-1 text-warning" />
-              <i class="me-4 text-muted">Secure Payments</i>
+              <i class="me-4 text-gray fw-light">Secure Payments</i>
               <NuxtImg src="/images/stripe-logo.svg" alt="Stripe" height="40"
             /></span>
           </div>
@@ -261,11 +289,21 @@ onUnmounted(() => {
 .footer {
   background-color: #f5f6fa;
 
+  &__logo {
+    height: 40px;
+  }
+
+  &__header-line {
+    margin: -1px 0.125rem 0;
+    border: 1px solid #d8dbeb;
+  }
+
   &__content {
     border-bottom: 1px solid #ebedf5;
   }
 
   &__copyright {
+    height: 88px;
     background-color: #ebedf5;
   }
 
@@ -292,6 +330,10 @@ onUnmounted(() => {
       color: var(--primary);
       text-decoration: none;
     }
+  }
+
+  &__marketplace-image {
+    height: 40px;
   }
 }
 

@@ -19,12 +19,7 @@ const { fetchResults, updateQuery } = useSearchStore();
 onMounted(() => {
   if (route.params.query) {
     updateQuery(decodeURIComponent(route.params.query as string));
-  } else {
-    updateQuery("");
   }
-  
-  // Fetch initial results
-  fetchResults("illustrations");
 });
 
 // Watch for route parameter changes
@@ -33,8 +28,6 @@ watch(
   (newQuery) => {
     if (newQuery) {
       updateQuery(decodeURIComponent(newQuery as string));
-    } else {
-      updateQuery("");
     }
     fetchResults("illustrations");
   }
@@ -49,9 +42,9 @@ const { title, subtitle } = useSearchTitle(
 useHead({
   title: computed(
     () =>
-      `${formatNumber(totalItems.value)} ${capitalizeWords(
-        query.value
-      )} ${humanizedAssetType.value} - Free Download in SVG, PNG, EPS | IconScout`
+      `${formatNumber(totalItems.value)} ${capitalizeWords(query.value)} ${
+        humanizedAssetType.value
+      } - Free Download in SVG, PNG, EPS | IconScout`
   ),
   meta: [
     {
@@ -60,7 +53,9 @@ useHead({
         () =>
           `Free Download ${formatNumber(totalItems.value)} ${capitalizeWords(
             query.value
-          )} ${humanizedAssetType.value} for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`
+          )} ${
+            humanizedAssetType.value
+          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`
       ),
     },
   ],
