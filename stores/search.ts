@@ -6,7 +6,7 @@ export const useSearchStore = defineStore("search", () => {
     price: "all",
     assetType: "all-assets",
     view: "item",
-    sortBy: "relevant",
+    sortBy: "featured",
   });
   const rawResults = ref<any[]>([]); // Store original API results
   const isLoading = ref(false); // TODO: please utilize in app when there is time

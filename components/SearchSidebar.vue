@@ -7,12 +7,7 @@
         <b-icon icon="funnel" class="me-2"></b-icon>
         <span class="fw-bold">Filters</span>
       </div>
-      <b-button
-        variant="link"
-        class="p-0"
-        @click="resetFilters"
-        :disabled="isLoading"
-      >
+      <b-button variant="link" class="p-0" @click="resetFilters">
         <b-icon icon="x-lg"></b-icon>
       </b-button>
     </div>
@@ -112,7 +107,6 @@
           <b-form-radio value="popular">Popular</b-form-radio>
           <b-form-radio value="latest">Latest</b-form-radio>
           <b-form-radio value="featured">Featured</b-form-radio>
-          <b-form-radio value="relevant">Relevant</b-form-radio>
         </b-form-radio-group>
       </div>
     </div>
