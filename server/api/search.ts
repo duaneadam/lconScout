@@ -1,21 +1,6 @@
 export default defineEventHandler(async (event) => {
-  const {
-    query,
-    assetType,
-    page,
-    perPage,
-    sort,
-    color,
-    style,
-    license,
-    format,
-    category,
-    subcategory,
-    tag,
-    price,
-    view,
-    exclude,
-  } = getQuery(event);
+  const { query, assetType, page, perPage, sort, price, view, exclude } =
+    getQuery(event);
 
   if (!assetType) {
     return {
@@ -99,7 +84,7 @@ export default defineEventHandler(async (event) => {
     const data = await response.json();
 
     // Transform the response based on product_type
-    if (view === 'pack') {
+    if (view === "pack") {
       return {
         status: data.status,
         response: {
@@ -107,8 +92,8 @@ export default defineEventHandler(async (event) => {
             current_page: data.response.packs.current_page,
             data: data.response.packs.data,
             total: data.response.packs.total || data.response.packs.data.length,
-          }
-        }
+          },
+        },
       };
     }
 
