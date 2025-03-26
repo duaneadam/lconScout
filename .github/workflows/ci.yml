@@ -1,4 +1,4 @@
-name: Nuxt CI/CD
+name: CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  run-test:
     runs-on: ubuntu-latest
 
     steps:

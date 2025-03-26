@@ -3,13 +3,13 @@ export const useSearchStore = defineStore("search", () => {
   const query = ref("");
   const filters = ref<SearchFilters>({
     exclusive: false,
-    price: "premium",
+    price: "all",
     assetType: "all-assets",
     view: "item",
     sortBy: "relevant",
   });
   const rawResults = ref<any[]>([]); // Store original API results
-  const isLoading = ref(false);
+  const isLoading = ref(false); // TODO: please utilize in app when there is time
   const apiTotalItems = ref(0); // Total from API before client-side filtering
 
   // Computed property for filtered results based on exclusive flag
