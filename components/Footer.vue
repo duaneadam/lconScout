@@ -236,7 +236,7 @@ onUnmounted(() => {
             </ul>
           </div>
 
-          <div class="col col-6 col-md-3 mb-4">
+          <div class="col col-12 col-md-3 mb-4">
             <h5 class="footer__heading mb-3">Get IconScout for desktop</h5>
             <div class="footer__social-links mb-6b">
               <NuxtLink to="/download/mac">
