@@ -1,6 +1,8 @@
 // Import our custom fonts
 @import "fonts";
 
+$btn-border-radius: 12px;
+
 // Import Bootstrap functions and variables first
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";

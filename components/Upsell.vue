@@ -1,21 +1,37 @@
 <template>
   <div class="upsell">
     <div class="col-md-8 col-lg-6">
-      <h2 class="fw-bold mb-4 w-100">View all Limit 3D Illustrations</h2>
+      <h3 class="fw-bold mb-4 w-100">
+        View all {{ query ? capitalizeWords(query) : "" }}
+        {{ humanizedAssetType }}
+      </h3>
 
-      <b-button class="btn-primary py-3 mb-3" size="lg">
+      <BButton
+        variant="primary"
+        class="text-white px-10b py-3b"
+        to="/get-started"
+        router-component-name="NuxtLink"
+      >
         Get Started - It's Free
-      </b-button>
+      </BButton>
 
       <p class="mt-3">
         Already have an account?
-        <NuxtLink to="/login" class="text-decoration-none login-link"
+        <NuxtLink to="/login" class="text-decoration-none text-primary"
           >Log In</NuxtLink
         >
       </p>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { useSearchStore } from "~/stores/search";
+import { capitalizeWords } from "~/utils/string";
+
+const { query, humanizedAssetType } = storeToRefs(useSearchStore());
+</script>
 
 <style scoped>
 .upsell {
@@ -28,6 +44,7 @@
   left: 0;
   width: 100%;
   height: 402px;
+  z-index: 30;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0) 0%,

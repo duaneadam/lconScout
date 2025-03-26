@@ -6,6 +6,7 @@ $green: #24a8af;
 $cyan: #55afe7;
 $white: #fff;
 $gray: #5a607d;
+$lightgray: #ebedf5;
 
 // Override Bootstrap's default variables
 $primary: $blue;
@@ -27,6 +28,7 @@ $theme-colors: (
   "light": $light,
   "dark": $dark,
   "gray": $gray,
+  "lightgray": $lightgray,
 );
 
 // Custom breakpoints
