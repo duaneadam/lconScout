@@ -55,6 +55,32 @@ const searchQuery = computed(() => {
 function handleNavClick(assetType: string) {
   updateAssetType(assetType);
 }
+
+// Add this watcher to update the store when the route changes
+watch(
+  () => route.path,
+  (newPath) => {
+    // Extract the asset type from the path
+    // The path format is "/{assetType}/{searchQuery?}"
+    const pathSegments = newPath.split("/").filter(Boolean);
+    if (pathSegments.length > 0) {
+      const assetType = pathSegments[0];
+      // Make sure the assetType is valid
+      if (
+        [
+          "all-assets",
+          "icons",
+          "illustrations",
+          "3d-illustrations",
+          "lottie-animations",
+        ].includes(assetType)
+      ) {
+        updateAssetType(assetType);
+      }
+    }
+  },
+  { immediate: true } // Run immediately to handle the initial route
+);
 </script>
 
 <style scoped>

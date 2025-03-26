@@ -1,5 +1,6 @@
 // Custom Bootstrap variables
 $blue: #0092e4;
+$darkblue: #0058e3;
 $red: #de524c;
 $yellow: #e7b549;
 $green: #24a8af;
@@ -29,6 +30,7 @@ $theme-colors: (
   "dark": $dark,
   "gray": $gray,
   "lightgray": $lightgray,
+  "darkblue": $darkblue,
 );
 
 // Custom breakpoints

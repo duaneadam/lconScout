@@ -128,8 +128,6 @@ const { filters } = storeToRefs(searchStore);
 watch(
   filters,
   (newFilters) => {
-    console.log('SearchSidebar - Filters changed:', newFilters);
-    // Fetch new results when filters change
     searchStore.fetchResults(newFilters.assetType, {
       page: 1,
       perPage: newFilters.assetType === "icons" ? 60 : 30,
