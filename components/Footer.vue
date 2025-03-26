@@ -39,13 +39,18 @@ onUnmounted(() => {
 <template>
   <footer class="footer fs-sm">
     <header class="footer__header">
-      <div class="container py-6b">
+      <div class="container py-6b d-flex align-items-center">
         <NuxtImg
           src="/images/iconscout-logo.svg"
           alt="IconScout"
           class="footer__logo me-6b"
         />
         <span>Design Resource Marketplace</span>
+
+        <div class="ms-auto">
+          <span class="text-darkblue">5,663,871</span> graphic resources &
+          counting
+        </div>
       </div>
 
       <div class="container">
@@ -233,6 +238,18 @@ onUnmounted(() => {
 
           <div class="col col-6 col-md-3 mb-4">
             <h5 class="footer__heading mb-3">Get IconScout for desktop</h5>
+            <div class="footer__social-links mb-6b">
+              <NuxtLink to="/download/mac">
+                <client-only>
+                  <unicon name="apple" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+              <NuxtLink to="/download/windows">
+                <client-only>
+                  <unicon name="windows" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+            </div>
 
             <h5 class="footer__heading mb-3">Get LottieFiles mobile app</h5>
 
@@ -248,18 +265,52 @@ onUnmounted(() => {
             </div>
 
             <h5 class="footer__heading mb-3">Follow Us</h5>
+
+            <div class="footer__social-links mb-6b">
+              <NuxtLink to="/download/mac">
+                <client-only>
+                  <unicon name="facebook" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+
+              <NuxtLink to="/download/windows">
+                <client-only>
+                  <unicon name="instagram" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+
+              <NuxtLink to="/download/windows">
+                <client-only>
+                  <unicon name="twitter" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+
+              <NuxtLink to="https://linkedin.com/iconscout">
+                <client-only>
+                  <unicon name="linkedin" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+
+              <NuxtLink to="https://dribbble.com/iconscout">
+                <client-only>
+                  <unicon name="dribbble" class="me-1"></unicon>
+                </client-only>
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="footer__copyright">
-      <div class="container">
-        <div class="row no-gutters justify-content-between text-secondary">
+      <div class="container h-100">
+        <div
+          class="row no-gutters justify-content-between text-secondary h-100"
+        >
           <div
-            class="d-flex align-items-center overflow-hidden col-10 col-sm-7"
+            class="d-flex align-items-center overflow-hidden col-10 col-sm-7 font-karla h-100"
           >
-            © {{ new Date().getFullYear() }} Design Barn Inc. Made with
+            {{ new Date().getFullYear() }} Design Barn Inc. Made with
             <Icon name="mdi:heart" size="16" class="text-danger mx-1" />
             from
             <span class="country-rotator ms-1">
@@ -268,12 +319,13 @@ onUnmounted(() => {
               </transition>
             </span>
           </div>
+
           <div
-            class="h-20 d-flex align-items-center justify-content-start col-12 col-sm-5 justify-content-sm-end"
+            class="h-100 d-flex align-items-center justify-content-start col-12 col-sm-5 justify-content-sm-end"
           >
             <span class="d-flex align-items-center">
               <Icon name="uis:lock" size="22" class="me-1 text-warning" />
-              <i class="me-4 text-gray fw-light">Secure Payments</i>
+              <i class="me-4 text-gray fw-thin font-karla">Secure Payments</i>
               <NuxtImg src="/images/stripe-logo.svg" alt="Stripe" height="40"
             /></span>
           </div>
@@ -335,6 +387,25 @@ onUnmounted(() => {
   &__marketplace-image {
     height: 40px;
   }
+
+  &__social-links {
+    display: flex;
+
+    a {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 2.5rem;
+      border: 1px solid #d9dbeb;
+      border-right: none;
+    }
+
+    a:last-child {
+      border-right: 1px solid #d9dbeb;
+    }
+  }
 }
 
 .country-rotator {
@@ -350,5 +421,17 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+</style>
+
+<!-- Can't use scoped here, client side changes -->
+<style lang="scss">
+@import "/assets/scss/variables";
+.unicon {
+  svg {
+    color: $gray;
+    fill: $gray;
+    height: 1rem;
+  }
 }
 </style>

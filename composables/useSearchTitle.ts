@@ -1,22 +1,17 @@
 export const useSearchTitle = (
   searchQuery: Ref<string>,
   totalItems: Ref<number>,
-  assetType: string | Ref<string>
+  assetType: Ref<string>
 ) => {
-  // Handle both string and ref inputs for assetType
-  const resolvedAssetType = computed(() => {
-    return typeof assetType === "string" ? assetType : assetType.value;
-  });
-
   // Computed properties for SearchHeader
   const title = computed(() => {
     const query = searchQuery.value ? `${searchQuery.value} ` : "";
-    return `${formatNumber(totalItems.value)} ${query}${resolvedAssetType.value}`;
+    return `${formatNumber(totalItems.value)} ${query}${assetType.value}`;
   });
 
   const subtitle = computed(() => {
     return `${formatNumber(totalItems.value)} ${
-      resolvedAssetType.value
+      assetType.value
     } exclusively selected by our designer community.`;
   });
 

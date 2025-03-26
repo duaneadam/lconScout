@@ -6,6 +6,7 @@ import {
   uniLock,
   uniEnvelope,
   uniGithub,
+  uniFacebook,
   uniTwitter,
   uniInstagram,
   uniLinkedin,
@@ -23,6 +24,8 @@ import {
   uniTimes,
   uniPlus,
   uniMinus,
+  uniWindows,
+  uniApple,
 } from "vue-unicons/dist/icons";
 
 Unicon.add([
@@ -47,6 +50,9 @@ Unicon.add([
   uniTimes,
   uniPlus,
   uniMinus,
+  uniWindows,
+  uniFacebook,
+  uniApple,
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {
