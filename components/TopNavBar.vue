@@ -1,5 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-6b">
+  <nav
+    class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-6b"
+  >
     <NuxtLink to="/" class="navbar__brand">
       <img src="/images/iconscout-logo.svg" alt="IconScout" height="30" />
     </NuxtLink>
@@ -19,16 +21,32 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
               <li>
-                <a class="dropdown-item" @click.prevent="selectAssetType('all-assets')">All Assets</a>
+                <a
+                  class="dropdown-item"
+                  @click.prevent="selectAssetType('all-assets')"
+                  >All Assets</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" @click.prevent="selectAssetType('3d-illustrations')">3D Models</a>
+                <a
+                  class="dropdown-item"
+                  @click.prevent="selectAssetType('3d-illustrations')"
+                  >3D Models</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" @click.prevent="selectAssetType('illustrations')">2D Assets</a>
+                <a
+                  class="dropdown-item"
+                  @click.prevent="selectAssetType('illustrations')"
+                  >2D Assets</a
+                >
               </li>
               <li>
-                <a class="dropdown-item" @click.prevent="selectAssetType('icons')">Icons</a>
+                <a
+                  class="dropdown-item"
+                  @click.prevent="selectAssetType('icons')"
+                  >Icons</a
+                >
               </li>
             </ul>
           </div>
@@ -47,6 +65,7 @@
           <button
             class="btn btn-outline-secondary border-0 rounded-circle bg-white p-2 me-2"
             type="button"
+            @click="triggerFileUpload"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -64,6 +83,14 @@
               />
             </svg>
           </button>
+          <!-- Hidden file input -->
+          <input 
+            ref="fileInput" 
+            type="file" 
+            class="d-none" 
+            accept="image/*"
+            @change="handleFileSelected" 
+          />
         </div>
       </div>
     </div>
@@ -74,6 +101,7 @@
 const route = useRoute();
 const router = useRouter();
 const searchInput = ref("");
+const fileInput = ref<HTMLInputElement | null>(null);
 
 const { filters, humanizedAssetType, query } = storeToRefs(useSearchStore());
 const { updateQuery, updateAssetType } = useSearchStore();
@@ -85,38 +113,64 @@ onMounted(() => {
     updateQuery(decodedQuery);
     searchInput.value = decodedQuery;
   }
-  
+
   if (route.params.assetType) {
     updateAssetType(route.params.assetType as string);
   }
 });
 
 // Watch for route changes
-watch(() => route.params, (newParams) => {
-  if (newParams.query) {
-    const decodedQuery = decodeURIComponent(newParams.query as string);
-    updateQuery(decodedQuery);
-    searchInput.value = decodedQuery;
-  } else {
-    updateQuery("");
-    searchInput.value = "";
-  }
-  
-  if (newParams.assetType) {
-    updateAssetType(newParams.assetType as string);
-  }
-}, { deep: true });
+watch(
+  () => route.params,
+  (newParams) => {
+    if (newParams.query) {
+      const decodedQuery = decodeURIComponent(newParams.query as string);
+      updateQuery(decodedQuery);
+      searchInput.value = decodedQuery;
+    } else {
+      updateQuery("");
+      searchInput.value = "";
+    }
+
+    if (newParams.assetType) {
+      updateAssetType(newParams.assetType as string);
+    }
+  },
+  { deep: true }
+);
 
 const selectAssetType = (assetType: string) => {
-  const path = query.value ? `/${assetType}/${encodeURIComponent(query.value)}` : `/${assetType}`;
+  const path = query.value
+    ? `/${assetType}/${encodeURIComponent(query.value)}`
+    : `/${assetType}`;
   router.push(path);
 };
 
 const performSearch = () => {
   const trimmedQuery = searchInput.value.trim();
   if (trimmedQuery) {
-    const path = `/${filters.value.assetType}/${encodeURIComponent(trimmedQuery)}`;
+    const path = `/${filters.value.assetType}/${encodeURIComponent(
+      trimmedQuery
+    )}`;
     router.push(path);
+  }
+};
+
+const triggerFileUpload = () => {
+  fileInput.value?.click();
+};
+
+const handleFileSelected = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const files = input.files;
+  
+  if (files && files.length > 0) {
+    // Here you can implement logic to handle the selected file
+    // For example, you could perform image search using this file
+    console.log('File selected:', files[0].name);
+    
+    // Clear the input so the same file can be selected again
+    input.value = '';
   }
 };
 </script>
