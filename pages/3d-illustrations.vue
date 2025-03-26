@@ -10,13 +10,12 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
-  useSearchStore()
-);
+const { filters, humanizedAssetType, totalItems, query, exclusiveItemsCount } =
+  storeToRefs(useSearchStore());
 const { fetchResults, updateQuery } = useSearchStore();
 
 // Fetch initial data
-await useAsyncData('3d-search', async () => {
+await useAsyncData("3d-search", async () => {
   if (route.params.query) {
     updateQuery(decodeURIComponent(route.params.query as string));
   }
@@ -37,6 +36,7 @@ watch(
 const { title, subtitle } = useSearchTitle(
   query,
   totalItems,
+  exclusiveItemsCount,
   humanizedAssetType
 );
 

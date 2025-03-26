@@ -10,9 +10,8 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
-  useSearchStore()
-);
+const { filters, humanizedAssetType, exclusiveItemsCount, totalItems, query } =
+  storeToRefs(useSearchStore());
 const { fetchResults, updateQuery } = useSearchStore();
 
 // Update query from route params if present
@@ -36,6 +35,7 @@ watch(
 const { title, subtitle } = useSearchTitle(
   query,
   totalItems,
+  exclusiveItemsCount,
   humanizedAssetType
 );
 

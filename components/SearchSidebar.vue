@@ -7,15 +7,25 @@
         <b-icon icon="funnel" class="me-2"></b-icon>
         <span class="fw-bold">Filters</span>
       </div>
-      <b-button variant="link" class="p-0" @click="resetFilters">
+      <b-button
+        variant="link"
+        class="p-0"
+        @click="resetFilters"
+        :disabled="isLoading"
+      >
         <b-icon icon="x-lg"></b-icon>
       </b-button>
     </div>
 
     <div class="p-3 border-bottom">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <span>IconScout Exclusive</span>
-        <b-form-checkbox v-model="filters.exclude" switch></b-form-checkbox>
+        <div>
+          <span>IconScout Exclusive</span>
+          <small v-if="filters.exclusive" class="d-block text-muted">
+            Showing {{ totalItems }} exclusive items
+          </small>
+        </div>
+        <b-form-checkbox v-model="filters.exclusive" switch></b-form-checkbox>
       </div>
     </div>
 
@@ -122,19 +132,48 @@ const expandedSections = ref({
 });
 
 const searchStore = useSearchStore();
-const { filters } = storeToRefs(searchStore);
+const { filters, isLoading, totalItems } = storeToRefs(searchStore);
 
-// Watch for filter changes and trigger search
+// Debounce timer for API calls
+const debounceTimer = ref(null);
+
+// Watch for non-exclusive filter changes that need API calls
 watch(
-  filters,
+  () => ({
+    assetType: filters.value.assetType,
+    price: filters.value.price,
+    view: filters.value.view,
+    sortBy: filters.value.sortBy,
+  }),
   (newFilters) => {
-    searchStore.fetchResults(newFilters.assetType, {
-      page: 1,
-      perPage: newFilters.assetType === "icons" ? 60 : 30,
-      sort: newFilters.sortBy || "relevant",
-    });
+    // Clear previous timer
+    if (debounceTimer.value) clearTimeout(debounceTimer.value);
+
+    // Set new timer
+    debounceTimer.value = setTimeout(() => {
+      searchStore.fetchResults(newFilters.assetType, {
+        page: 1,
+        perPage: newFilters.assetType === "icons" ? 60 : 30,
+        sort: newFilters.sortBy || "relevant",
+      });
+    }, 300); // 300ms debounce
   },
   { deep: true }
+);
+
+// Don't need API calls for exclusive filter toggle (client-side filtering)
+// But we might want to show a brief loading state for better UX
+watch(
+  () => filters.value.exclusive,
+  () => {
+    // For large result sets, briefly show loading state for better UX
+    if (totalItems.value > 100) {
+      isLoading.value = true;
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 200);
+    }
+  }
 );
 
 function resetFilters() {
@@ -152,6 +191,7 @@ function toggleSection(section: keyof typeof expandedSections.value) {
   border-radius: 0.25rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   width: 260px;
+  position: relative;
 }
 
 .border-bottom {
@@ -171,5 +211,10 @@ function toggleSection(section: keyof typeof expandedSections.value) {
 /* Make section headers clickable */
 [class*="justify-content-between"] {
   cursor: pointer;
+}
+
+.text-muted {
+  color: #6c757d !important;
+  font-size: 0.75rem;
 }
 </style>

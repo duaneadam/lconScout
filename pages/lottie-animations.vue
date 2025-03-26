@@ -11,20 +11,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useSearchStore } from "~/stores/search";
 import { useSearchTitle } from "~/composables/useSearchTitle";
 import { useAsyncData } from "nuxt/app";
 
 const route = useRoute();
-const { filters, humanizedAssetType, totalItems, query } = storeToRefs(
-  useSearchStore()
-);
+const { filters, humanizedAssetType, exclusiveItemsCount, totalItems, query } =
+  storeToRefs(useSearchStore());
 const { fetchResults, updateQuery } = useSearchStore();
 
 // Fetch initial data
-await useAsyncData('lottie-search', async () => {
+await useAsyncData("lottie-search", async () => {
   if (route.params.query) {
     updateQuery(decodeURIComponent(route.params.query as string));
   }
@@ -45,6 +43,7 @@ watch(
 const { title, subtitle } = useSearchTitle(
   query,
   totalItems,
+  exclusiveItemsCount,
   humanizedAssetType
 );
 

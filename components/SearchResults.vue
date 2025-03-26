@@ -192,6 +192,14 @@ watch(
   { deep: true }
 );
 
+watch(
+  () => filters.value.exclusive,
+  () => {
+    // Reset to page 1 when the exclusive filter changes
+    currentPage.value = 1;
+  }
+);
+
 // Fetch assets from the API
 const fetchAssets = async (isNewSearch = false) => {
   if (isNewSearch) {

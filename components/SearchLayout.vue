@@ -20,8 +20,6 @@
 </template>
 
 <script setup lang="ts">
-const { filters } = storeToRefs(useSearchStore());
-
 defineProps<{
   title: string;
   subtitle: string;

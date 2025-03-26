@@ -1,6 +1,7 @@
 export const useSearchTitle = (
   searchQuery: Ref<string>,
   totalItems: Ref<number>,
+  totalExclusiveItems: Ref<number>,
   assetType: Ref<string>
 ) => {
   // Computed properties for SearchHeader
@@ -10,7 +11,7 @@ export const useSearchTitle = (
   });
 
   const subtitle = computed(() => {
-    return `${formatNumber(totalItems.value)} ${
+    return `${formatNumber(totalExclusiveItems.value)} ${
       assetType.value
     } exclusively selected by our designer community.`;
   });
