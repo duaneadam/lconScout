@@ -27,7 +27,7 @@ describe("useSearchStore", () => {
       price: "all",
       assetType: "all-assets",
       view: "item",
-      sortBy: "relevant",
+      sortBy: "featured",
     });
 
     expect(store.results).toEqual([]);
@@ -165,7 +165,7 @@ describe("useSearchStore", () => {
           assetType: "icons",
           page: 1,
           perPage: 30,
-          sort: "relevant",
+          sort: "featured",
           price: "all",
           view: "item",
         },
