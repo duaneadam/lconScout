@@ -11,7 +11,11 @@
         ]"
       >
         <div v-for="n in perPage" :key="n" class="col">
-          <SearchCard skeleton :variant="props.cardVariant || 'default'" />
+          <SearchCard
+            skeleton
+            :variant="props.cardVariant || 'default'"
+            :lottiePlayerType="lottiePlayerType"
+          />
         </div>
       </div>
     </div>
@@ -40,6 +44,7 @@
           <SearchCard
             :asset="asset"
             :variant="props.cardVariant || 'default'"
+            :lottiePlayerType="lottiePlayerType"
           />
         </div>
       </div>
@@ -151,6 +156,12 @@ const props = defineProps<{
   searchQuery: string;
   cardVariant?: "default" | "square";
 }>();
+
+// Get the feature flag only once in the parent component
+const { playerType } = useLottieFeatureFlag();
+const lottiePlayerType = computed(
+  () => playerType.value as "dotlottie" | "lottiefiles"
+);
 
 // Component state
 const loading = ref(true);

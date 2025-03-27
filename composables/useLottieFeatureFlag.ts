@@ -12,6 +12,11 @@ export const useLottieFeatureFlag = () => {
     if (typeof window === "undefined") return "dotlottie";
 
     const stored = localStorage.getItem("lottie-player-preference");
+    const loggerMessage =
+      stored === "lottiefiles"
+        ? "You are using Lottie Player"
+        : "You are using DotLottie Player";
+    console.log(loggerMessage);
     return stored === "lottiefiles" ? "lottiefiles" : "dotlottie";
   };
 

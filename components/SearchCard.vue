@@ -16,7 +16,7 @@
         <template v-if="asset?.asset === 'lottie'">
           <!-- DotLottieVue player -->
           <DotLottieVue
-            v-if="playerType === 'dotlottie'"
+            v-if="lottiePlayerType === 'dotlottie'"
             ref="dotLottiePlayer"
             :src="lottieUrl"
             :autoplay="true"
@@ -77,6 +77,7 @@ const props = defineProps<{
       preview_image?: string;
       lottie?: string;
       original?: string;
+      json?: string;
     };
     color_codes: Array<{
       decimal_color: number;
@@ -98,9 +99,9 @@ const props = defineProps<{
   variant?: "default" | "square";
   skeleton?: boolean;
   withOverlay?: boolean;
+  lottiePlayerType: "dotlottie" | "lottiefiles";
 }>();
 
-const { playerType } = useLottieFeatureFlag();
 const dotLottiePlayer = ref<InstanceType<typeof DotLottieVue> | null>(null);
 const lottieFilesPlayer = ref<any>(null);
 
@@ -146,12 +147,12 @@ const lottieUrl = computed(() => {
   if (!props.asset || props.asset.asset !== "lottie") return "";
 
   // For LottieFiles player, always use JSON format
-  if (playerType.value === "lottiefiles") {
+  if (props.lottiePlayerType === "lottiefiles") {
     return props.asset.urls.original || "";
   }
 
   // For DotLottie player, prefer .lottie format but fallback to JSON if needed
-  return props.asset.urls.lottie || props.asset.urls.json || "";
+  return props.asset.urls.lottie || props.asset.urls.original || "";
 });
 </script>
 

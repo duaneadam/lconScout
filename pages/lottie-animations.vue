@@ -12,8 +12,6 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useSearchStore } from "~/stores/search";
-import { useSearchTitle } from "~/composables/useSearchTitle";
 import { useAsyncData } from "nuxt/app";
 
 const route = useRoute();
