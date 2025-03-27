@@ -4,12 +4,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(1000);
     const totalExclusiveItems = ref(50);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(title.value).toBe("1,000 Icons");
@@ -20,12 +22,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(100);
     const totalExclusiveItems = ref(10);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(title.value).toBe("100 Icons");
@@ -36,12 +40,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(50);
     const totalExclusiveItems = ref(5);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(title.value).toBe("50 arrow Icons");
@@ -52,12 +58,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(200);
     const totalExclusiveItems = ref(20);
     const assetType = ref("Illustrations");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(title.value).toBe("200 Illustrations");
@@ -68,12 +76,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(25);
     const totalExclusiveItems = ref(3);
     const assetType = ref("Illustrations");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(title.value).toBe("25 landscape Illustrations");
@@ -84,12 +94,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(150);
     const totalExclusiveItems = ref(30);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { subtitle } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(subtitle.value).toBe(
@@ -102,12 +114,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(75);
     const totalExclusiveItems = ref(15);
     const assetType = ref("3D Illustrations");
+    const isLoading = ref(false);
 
     const { subtitle } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
 
     expect(subtitle.value).toBe(
@@ -120,12 +134,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(100);
     const totalExclusiveItems = ref(10);
     const assetType = ref("Icon");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
     expect(title.value).toBe("100 Icon");
 
@@ -138,12 +154,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(100);
     const totalExclusiveItems = ref(10);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
     expect(title.value).toBe("100 Icons");
 
@@ -156,12 +174,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(100);
     const totalExclusiveItems = ref(10);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { title } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
     expect(title.value).toBe("100 Icons");
 
@@ -174,12 +194,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(100);
     const totalExclusiveItems = ref(10);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { subtitle } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
     expect(subtitle.value).toBe(
       "10 Icons exclusively selected by our designer community."
@@ -196,12 +218,14 @@ describe("useSearchTitle", () => {
     const totalItems = ref(100);
     const totalExclusiveItems = ref(10);
     const assetType = ref("Icons");
+    const isLoading = ref(false);
 
     const { subtitle } = useSearchTitle(
       searchQuery,
       totalItems,
       totalExclusiveItems,
-      assetType
+      assetType,
+      isLoading
     );
     expect(subtitle.value).toBe(
       "10 Icons exclusively selected by our designer community."
@@ -211,5 +235,62 @@ describe("useSearchTitle", () => {
     expect(subtitle.value).toBe(
       "10 Vectors exclusively selected by our designer community."
     );
+  });
+
+  it("should show loading message when isLoading is true", () => {
+    const searchQuery = ref("arrow");
+    const totalItems = ref(100);
+    const totalExclusiveItems = ref(10);
+    const assetType = ref("Icons");
+    const isLoading = ref(true);
+
+    const { title } = useSearchTitle(
+      searchQuery,
+      totalItems,
+      totalExclusiveItems,
+      assetType,
+      isLoading
+    );
+    expect(title.value).toBe("Searching for arrow Icons...");
+  });
+
+  it("should show loading message without search query when isLoading is true", () => {
+    const searchQuery = ref("");
+    const totalItems = ref(100);
+    const totalExclusiveItems = ref(10);
+    const assetType = ref("Icons");
+    const isLoading = ref(true);
+
+    const { title } = useSearchTitle(
+      searchQuery,
+      totalItems,
+      totalExclusiveItems,
+      assetType,
+      isLoading
+    );
+    expect(title.value).toBe("Searching for Icons...");
+  });
+
+  it("should update title when isLoading changes", () => {
+    const searchQuery = ref("arrow");
+    const totalItems = ref(100);
+    const totalExclusiveItems = ref(10);
+    const assetType = ref("Icons");
+    const isLoading = ref(false);
+
+    const { title } = useSearchTitle(
+      searchQuery,
+      totalItems,
+      totalExclusiveItems,
+      assetType,
+      isLoading
+    );
+    expect(title.value).toBe("100 arrow Icons");
+
+    isLoading.value = true;
+    expect(title.value).toBe("Searching for arrow Icons...");
+
+    isLoading.value = false;
+    expect(title.value).toBe("100 arrow Icons");
   });
 });

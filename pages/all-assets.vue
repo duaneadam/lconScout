@@ -10,8 +10,14 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const { filters, humanizedAssetType, exclusiveItemsCount, totalItems, query } =
-  storeToRefs(useSearchStore());
+const {
+  filters,
+  humanizedAssetType,
+  exclusiveItemsCount,
+  totalItems,
+  query,
+  isLoading,
+} = storeToRefs(useSearchStore());
 const { fetchResults, updateQuery } = useSearchStore();
 
 // Fetch initial data
@@ -29,7 +35,6 @@ watch(
     if (newQuery) {
       updateQuery(decodeURIComponent(newQuery as string));
     }
-    fetchResults("all");
   }
 );
 
@@ -37,7 +42,8 @@ const { title, subtitle } = useSearchTitle(
   query,
   totalItems,
   exclusiveItemsCount,
-  humanizedAssetType
+  humanizedAssetType,
+  isLoading
 );
 
 useHead({

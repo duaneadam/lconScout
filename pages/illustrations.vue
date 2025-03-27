@@ -10,9 +10,15 @@
 
 <script setup lang="ts">
 const route = useRoute();
-const { filters, humanizedAssetType, exclusiveItemsCount, totalItems, query } =
-  storeToRefs(useSearchStore());
-const { fetchResults, updateQuery } = useSearchStore();
+const {
+  filters,
+  humanizedAssetType,
+  exclusiveItemsCount,
+  totalItems,
+  query,
+  isLoading,
+} = storeToRefs(useSearchStore());
+const { updateQuery } = useSearchStore();
 
 // Update query from route params if present
 onMounted(() => {
@@ -28,7 +34,6 @@ watch(
     if (newQuery) {
       updateQuery(decodeURIComponent(newQuery as string));
     }
-    fetchResults("illustrations");
   }
 );
 
@@ -36,7 +41,8 @@ const { title, subtitle } = useSearchTitle(
   query,
   totalItems,
   exclusiveItemsCount,
-  humanizedAssetType
+  humanizedAssetType,
+  isLoading
 );
 
 useHead({
