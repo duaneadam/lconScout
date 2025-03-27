@@ -18,13 +18,11 @@ const {
   query,
   isLoading,
 } = storeToRefs(useSearchStore());
-const { updateQuery } = useSearchStore();
+const { fetchResults, updateQuery } = useSearchStore();
 
 // Update query from route params if present
 onMounted(() => {
-  if (route.params.query) {
-    updateQuery(decodeURIComponent(route.params.query as string));
-  }
+  fetchResults("illustrations");
 });
 
 // Watch for route parameter changes

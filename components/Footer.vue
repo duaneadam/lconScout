@@ -39,7 +39,7 @@ onUnmounted(() => {
 <template>
   <footer class="footer fs-sm">
     <header class="footer__header">
-      <div class="container py-6b d-flex align-items-center">
+      <div class="container-lg px-10b px-lg-0 py-6b d-flex align-items-center">
         <NuxtImg
           src="/images/iconscout-logo.svg"
           alt="IconScout"
@@ -53,13 +53,13 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div class="container">
+      <div class="container-lg px-10b px-lg-0">
         <div class="footer__header-line"></div>
       </div>
     </header>
 
     <div class="footer__content">
-      <div class="container py-5">
+      <div class="container-lg px-10b px-lg-0 py-5">
         <div class="row row-cols-xl-5">
           <div class="col col-6 col-md-3 mb-4">
             <h5 class="footer__heading mb-3">Graphic Resources</h5>
@@ -303,7 +303,7 @@ onUnmounted(() => {
     </div>
 
     <div class="footer__copyright">
-      <div class="container h-100">
+      <div class="container-lg px-10b px-lg-0 h-100">
         <div
           class="row no-gutters justify-content-between text-secondary h-100"
         >
@@ -385,7 +385,13 @@ onUnmounted(() => {
   }
 
   &__marketplace-image {
-    height: 40px;
+    // Hack because the SVG from Figma has different heights
+    &:first-child {
+      width: 48%;
+    }
+    &:last-child {
+      width: 52%;
+    }
   }
 
   &__social-links {

@@ -27,9 +27,6 @@ const { fetchResults, updateQuery } = useSearchStore();
 
 // Fetch initial data
 await useAsyncData("lottie-search", async () => {
-  if (route.params.query) {
-    updateQuery(decodeURIComponent(route.params.query as string));
-  }
   return fetchResults("lottie");
 });
 

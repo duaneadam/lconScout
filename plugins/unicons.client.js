@@ -26,6 +26,9 @@ import {
   uniMinus,
   uniWindows,
   uniApple,
+  uniImage,
+  uniPicture,
+  uniCamera,
 } from "vue-unicons/dist/icons";
 
 Unicon.add([
@@ -53,6 +56,10 @@ Unicon.add([
   uniWindows,
   uniFacebook,
   uniApple,
+  uniImage,
+  uniPicture,
+
+  uniCamera,
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {

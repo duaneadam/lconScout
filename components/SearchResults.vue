@@ -68,10 +68,6 @@
 
       <div v-if="!hasMorePages && assets.length > 0" class="text-center my-4">
         <Upsell v-if="!isUserLoggedIn && assets.length >= perPage * 2" />
-        <p v-else-if="!isUserLoggedIn && currentPage >= 2" class="text-muted">
-          Loading page 2...
-        </p>
-        <p v-else class="text-muted">No more results</p>
       </div>
     </div>
   </div>

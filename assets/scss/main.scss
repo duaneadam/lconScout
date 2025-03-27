@@ -53,3 +53,27 @@ body,
 .font-karla {
   font-family: "Karla", sans-serif;
 }
+
+.form-switch > .form-check-input {
+  background: #b5bad4;
+  height: 1.25rem;
+  width: 2.25rem;
+  background-repeat: no-repeat;
+  background-position: left;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(255,255,255,1.0)'/></svg>");
+}
+
+.form-switch > .form-check-input:checked {
+  background: #2ca7af;
+  height: 1.25rem;
+  width: 2.25rem;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(255,255,255,1.0)'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.form-check-input:checked[type="radio"] {
+  background-color: white;
+  border-color: #3d92de;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%233D92DE'/%3e%3c/svg%3e");
+}

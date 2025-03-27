@@ -23,9 +23,6 @@ const { fetchResults, updateQuery } = useSearchStore();
 // Fetch initial data
 // For SEO, needed to fill the meta tags and title
 const { data } = await useAsyncData("icons-search", async () => {
-  if (route.params.query) {
-    updateQuery(decodeURIComponent(route.params.query as string));
-  }
   return fetchResults("icons");
 });
 

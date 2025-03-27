@@ -1,5 +1,5 @@
 <template>
-  <div class="search-sidebar">
+  <div class="search-sidebar d-none d-md-block">
     <div
       class="d-flex justify-content-between align-items-center p-3 border-bottom"
     >

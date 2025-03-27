@@ -12,76 +12,94 @@
       class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-6b"
       :class="{ 'is-sticky': isSticky }"
     >
-      <NuxtLink to="/" class="navbar__brand">
+      <NuxtLink to="/" class="me-7b">
         <img src="/images/iconscout-logo.svg" alt="IconScout" height="30" />
       </NuxtLink>
 
-      <div class="navbar-collapse" id="navbarContent">
-        <div class="navbar__search">
-          <div class="input-group">
-            <BDropdown
-              :text="displayAssetType"
-              class="border-0 fw-bold text-dark bg-transparent p-0"
-              toggle-class="border-0 bg-transparent text-dark fw-bold"
+      <div class="navbar__search me-7b">
+        <div class="input-group align-items-center">
+          <BDropdown
+            :text="displayAssetType"
+            toggle-class="border-0 bg-transparent text-dark fw-bold d-flex align-items-center"
+          >
+            <BDropdownItem @click="selectAssetType('all-assets')"
+              >All</BDropdownItem
             >
-              <BDropdownItem @click="selectAssetType('all-assets')"
-                >All</BDropdownItem
-              >
-              <BDropdownItem @click="selectAssetType('3d-illustrations')"
-                >3D</BDropdownItem
-              >
-              <BDropdownItem @click="selectAssetType('lottie-animations')"
-                >Animations</BDropdownItem
-              >
-              <BDropdownItem @click="selectAssetType('illustrations')"
-                >Illustrations</BDropdownItem
-              >
-              <BDropdownItem @click="selectAssetType('icons')"
-                >Icons</BDropdownItem
-              >
-            </BDropdown>
-
-            <div class="my-2 mx-2"></div>
-
-            <input
-              type="search"
-              class="form-control"
-              placeholder="Search from 8 Million+ assets"
-              aria-label="Search assets"
-              v-model="searchInput"
-              @keyup.enter="performSearch"
-            />
-
-            <button
-              class="btn btn-outline-secondary border-0 rounded-circle bg-white p-2 me-2"
-              type="button"
-              @click="triggerFileUpload"
+            <BDropdownItem @click="selectAssetType('3d-illustrations')"
+              >3D</BDropdownItem
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="currentColor"
-                class="bi bi-camera"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"
-                />
-                <path
-                  d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"
-                />
-              </svg>
-            </button>
-            <input
-              ref="fileInput"
-              type="file"
-              class="d-none"
-              accept="image/*"
-              @change="handleFileSelected"
-            />
-          </div>
+            <BDropdownItem @click="selectAssetType('lottie-animations')"
+              >Animations</BDropdownItem
+            >
+            <BDropdownItem @click="selectAssetType('illustrations')"
+              >Illustrations</BDropdownItem
+            >
+            <BDropdownItem @click="selectAssetType('icons')"
+              >Icons</BDropdownItem
+            >
+          </BDropdown>
+
+          <input
+            type="search"
+            class="form-control"
+            placeholder="Search from 8 Million+ assets"
+            aria-label="Search assets"
+            v-model="searchInput"
+            @keyup.enter="performSearch"
+          />
+
+          <button class="image-button" type="button" @click="triggerFileUpload">
+            <Unicon name="image" />
+          </button>
+          <input
+            ref="fileInput"
+            type="file"
+            class="d-none"
+            accept="image/*"
+            @change="handleFileSelected"
+          />
         </div>
+      </div>
+
+      <div class="navbar__links d-flex align-items-center">
+        <BNavItemDropdown
+          id="my-nav-dropdown"
+          text="Explore"
+          toggle-class="nav-link-custom"
+          right
+        >
+          <BDropdownItem>One</BDropdownItem>
+          <BDropdownItem>Two</BDropdownItem>
+          <BDropdownDivider />
+          <BDropdownItem>Three</BDropdownItem>
+        </BNavItemDropdown>
+
+        <BNavItemDropdown
+          id="my-nav-dropdown"
+          text="Tools"
+          toggle-class="nav-link-custom"
+          right
+        >
+          <BDropdownItem>One</BDropdownItem>
+          <BDropdownItem>Two</BDropdownItem>
+          <BDropdownDivider />
+          <BDropdownItem>Three</BDropdownItem>
+        </BNavItemDropdown>
+
+        <a href="#" class="nav-item">All Features</a>
+
+        <a href="#" class="nav-item">Free Asset</a>
+      </div>
+
+      <div class="navbar__auth-buttons ms-auto">
+        <BButton
+          variant="outline-secondary"
+          class="me-3b text-black auth-button"
+          >Login</BButton
+        >
+        <BButton variant="primary" class="auth-button text-white"
+          >Signup</BButton
+        >
       </div>
     </nav>
   </div>
@@ -243,21 +261,31 @@ const handleFileSelected = (event: Event) => {
     animation: slideDown 0.4s forwards;
   }
 
-  &__brand {
-    margin-right: 1.75rem;
-  }
-
   &__search {
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
     font-size: 0.875rem;
     background-color: #ebedf5;
     width: 100%;
     max-width: 360px;
     height: 46px;
+
+    input {
+      background-color: #ebedf5;
+      border: none;
+      border-left: 1px solid #b4bad6;
+      height: 1.5rem;
+    }
   }
 
-  &__search-button {
-    width: 46px;
-    height: 46px;
+  &__links {
+    .nav-item {
+      color: black;
+      text-decoration: none;
+      margin-right: 1rem;
+      list-style: none;
+    }
   }
 }
 
@@ -284,5 +312,33 @@ const handleFileSelected = (event: Event) => {
 
 .dropdown-toggle {
   font-size: 1.1rem;
+}
+
+button.image-button {
+  border: none;
+  outline: none;
+  background-color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  margin-right: 0.5rem;
+  border-radius: 12px !important;
+}
+
+.auth-button {
+  width: 5.75rem;
+  height: 2.75rem;
+  border: 1px solid #d8dbeb;
+  border-radius: 2rem;
+  padding-top: 10px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+}
+
+.auth-button.btn-outline-secondary {
+  &:hover {
+    background-color: #d8dbeb;
+  }
 }
 </style>
