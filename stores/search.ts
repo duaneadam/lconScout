@@ -96,7 +96,7 @@ export const useSearchStore = defineStore("search", () => {
   function resetFilters() {
     filters.value = {
       exclusive: false,
-      price: "premium",
+      price: "all",
       assetType: "all-assets",
       view: "item",
       sortBy: "relevant",

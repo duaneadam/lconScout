@@ -284,7 +284,7 @@ describe("useSearchStore", () => {
 
       expect(store.filters).toEqual({
         exclusive: false,
-        price: "premium",
+        price: "all",
         assetType: "all-assets",
         view: "item",
         sortBy: "relevant",
