@@ -185,7 +185,10 @@ function toggleSection(section: keyof typeof expandedSections.value) {
   border-radius: 0.25rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   width: 260px;
+  margin-left: 10px;
   position: relative;
+  max-height: calc(100vh - 60px - 20px - 20px);
+  overflow-y: auto;
 }
 
 .border-bottom {

@@ -46,3 +46,11 @@ const handleFilterChange = (filter: any) => {
   emit("filterChanged", filter);
 };
 </script>
+
+<style>
+.sidebar-container {
+  width: 280px;
+  flex-shrink: 0;
+  padding-top: 20px;
+}
+</style>
