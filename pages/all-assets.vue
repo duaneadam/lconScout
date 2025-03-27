@@ -1,65 +1,30 @@
 <template>
-  <SearchLayout
-    :title="title"
-    :subtitle="subtitle"
-    :current-asset-type="filters.assetType"
-    :search-query="query"
-    card-variant="square"
-  />
+  <SearchLayout card-variant="default" />
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
-const {
-  filters,
-  humanizedAssetType,
-  exclusiveItemsCount,
-  totalItems,
-  query,
-  isLoading,
-} = storeToRefs(useSearchStore());
-const { fetchResults, updateQuery } = useSearchStore();
+const searchStore = useSearchStore();
+const { query, apiTotalItems } = storeToRefs(searchStore);
 
-// Fetch initial data
-await useAsyncData("all-assets-search", async () => {
-  return fetchResults("all");
-});
+await useAsyncData("search-init", () => searchStore.initializeFromRoute());
 
-// Watch for route parameter changes
-watch(
-  () => route.params.query,
-  (newQuery) => {
-    if (newQuery) {
-      updateQuery(decodeURIComponent(newQuery as string));
-    }
-  }
-);
-
-const { title, subtitle } = useSearchTitle(
-  query,
-  totalItems,
-  exclusiveItemsCount,
-  humanizedAssetType,
-  isLoading
-);
-
+// SEO Meta Tags - Use computed refs from the store
+// TODO: Learn how to test this, this broke multiple times when we changed totalItems
 useHead({
   title: computed(
     () =>
-      `${formatNumber(totalItems.value)} ${capitalizeWords(query.value)} ${
-        humanizedAssetType.value
-      } - Free Download | IconScout`
+      `${formatNumber(apiTotalItems.value)} ${
+        query.value ? capitalizeWords(query.value) + " " : ""
+      }Design Assets - Icons, Illustrations, 3D & Lottie | IconScout`
   ),
   meta: [
     {
       name: "description",
       content: computed(
         () =>
-          `Free Download ${formatNumber(totalItems.value)} ${capitalizeWords(
-            query.value
-          )} ${
-            humanizedAssetType.value
-          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`
+          `Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }premium & free Assets for commercial and personal use. Available as Icons, Illustrations, 3D Illustrations, and Lottie Animations.` // More generic description
       ),
     },
   ],

@@ -1,10 +1,10 @@
 import { ref } from "vue";
 
-export type LottiePlayerType = "dotlottie" | "lottiefiles";
+export type LottiePlayerType = "dotlottie" | "lottiejson";
 
 /**
  * Composable to manage Lottie player feature flag
- * Toggles between DotLottieVue and @lottiefiles/lottie-player
+ * Toggles between DotLottieVue and @lottiejson/lottie-player
  */
 export const useLottieFeatureFlag = () => {
   // Default to dotlottie if no preference is stored
@@ -13,11 +13,11 @@ export const useLottieFeatureFlag = () => {
 
     const stored = localStorage.getItem("lottie-player-preference");
     const loggerMessage =
-      stored === "lottiefiles"
+      stored === "lottiejson"
         ? "You are using Lottie Player"
         : "You are using DotLottie Player";
     console.log(loggerMessage);
-    return stored === "lottiefiles" ? "lottiefiles" : "dotlottie";
+    return stored === "lottiejson" ? "lottiejson" : "dotlottie";
   };
 
   const playerType = ref<LottiePlayerType>(getStoredPreference());
@@ -25,7 +25,7 @@ export const useLottieFeatureFlag = () => {
   // Toggle between player types
   const togglePlayerType = () => {
     playerType.value =
-      playerType.value === "dotlottie" ? "lottiefiles" : "dotlottie";
+      playerType.value === "dotlottie" ? "lottiejson" : "dotlottie";
 
     if (typeof window !== "undefined") {
       localStorage.setItem("lottie-player-preference", playerType.value);

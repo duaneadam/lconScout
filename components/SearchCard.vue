@@ -99,7 +99,7 @@ const props = defineProps<{
   variant?: "default" | "square";
   skeleton?: boolean;
   withOverlay?: boolean;
-  lottiePlayerType: "dotlottie" | "lottiefiles";
+  lottiePlayerType: "dotlottie" | "lottiejson";
 }>();
 
 const dotLottiePlayer = ref<InstanceType<typeof DotLottieVue> | null>(null);
@@ -147,7 +147,7 @@ const lottieUrl = computed(() => {
   if (!props.asset || props.asset.asset !== "lottie") return "";
 
   // For LottieFiles player, always use JSON format
-  if (props.lottiePlayerType === "lottiefiles") {
+  if (props.lottiePlayerType === "lottiejson") {
     return props.asset.urls.original || "";
   }
 

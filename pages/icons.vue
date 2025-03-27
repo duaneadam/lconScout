@@ -1,66 +1,35 @@
 <template>
-  <SearchLayout
-    :title="title"
-    :subtitle="subtitle"
-    :current-asset-type="filters.assetType"
-    :search-query="query"
-    card-variant="square"
-  />
+  <SearchLayout :card-variant="cardVariant" />
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
-const {
-  filters,
-  humanizedAssetType,
-  exclusiveItemsCount,
-  totalItems,
-  query,
-  isLoading,
-} = storeToRefs(useSearchStore());
-const { fetchResults, updateQuery } = useSearchStore();
+const searchStore = useSearchStore();
+const { query, apiTotalItems, humanizedAssetType } = storeToRefs(searchStore);
 
-// Fetch initial data
-// For SEO, needed to fill the meta tags and title
-const { data } = await useAsyncData("icons-search", async () => {
-  return fetchResults("icons");
-});
-
-// Watch for route parameter changes
-watch(
-  () => route.params.query,
-  (newQuery) => {
-    if (newQuery) {
-      updateQuery(decodeURIComponent(newQuery as string));
-    }
-  }
+const cardVariant = computed(() =>
+  searchStore.filters.assetType === "icons" ? "square" : "default"
 );
 
-const { title, subtitle } = useSearchTitle(
-  query,
-  totalItems,
-  exclusiveItemsCount,
-  humanizedAssetType,
-  isLoading
-);
+await useAsyncData("search-init", () => searchStore.initializeFromRoute());
 
+// SEO Meta Tags - Use computed refs from the store
 useHead({
   title: computed(
     () =>
-      `${formatNumber(totalItems.value)} ${capitalizeWords(query.value)} ${
-        humanizedAssetType.value
-      } - Free Download in PNG, BLEND, glTF | IconScout`
+      `${formatNumber(apiTotalItems.value)} ${
+        query.value ? capitalizeWords(query.value) + " " : ""
+      }${humanizedAssetType.value} - Free Download | IconScout` // Simplified title
   ),
   meta: [
     {
       name: "description",
       content: computed(
         () =>
-          `Free Download ${formatNumber(totalItems.value)} ${capitalizeWords(
-            query.value
-          )} ${
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
             humanizedAssetType.value
-          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles`
+          } for commercial and personal use. Available in various styles.` // Simplified description
       ),
     },
   ],

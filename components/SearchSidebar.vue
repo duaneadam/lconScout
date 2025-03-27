@@ -12,18 +12,24 @@
       </b-button>
     </div>
 
+    <!-- Exclusive Filter -->
     <div class="p-3 border-bottom">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
           <span>IconScout Exclusive</span>
-          <small v-if="filters.exclusive" class="d-block text-muted">
-            Showing {{ totalItems }} exclusive items
+          <small v-if="localFilters.exclusive" class="d-block text-muted">
+            Showing {{ exclusiveItemsCount }} exclusive items
           </small>
         </div>
-        <b-form-checkbox v-model="filters.exclusive" switch></b-form-checkbox>
+        <!-- Use local ref for immediate UI update, watcher updates store -->
+        <b-form-checkbox
+          v-model="localFilters.exclusive"
+          switch
+        ></b-form-checkbox>
       </div>
     </div>
 
+    <!-- Asset Filter -->
     <div class="p-3 border-bottom">
       <div
         class="d-flex justify-content-between align-items-center mb-3"
@@ -36,8 +42,9 @@
           ></unicon>
         </client-only>
       </div>
-      <div v-if="expandedSections.asset">
-        <b-form-radio-group v-model="filters.assetType" stacked>
+      <b-collapse v-model="expandedSections.asset">
+        <!-- Use local ref for immediate UI update, watcher updates store -->
+        <b-form-radio-group v-model="localFilters.assetType" stacked>
           <b-form-radio value="all-assets">All assets</b-form-radio>
           <b-form-radio value="3d-illustrations">3D Illustrations</b-form-radio>
           <b-form-radio value="lottie-animations"
@@ -46,9 +53,10 @@
           <b-form-radio value="illustrations">Illustrations</b-form-radio>
           <b-form-radio value="icons">Icons</b-form-radio>
         </b-form-radio-group>
-      </div>
+      </b-collapse>
     </div>
 
+    <!-- Price Filter -->
     <div class="p-3 border-bottom">
       <div
         class="d-flex justify-content-between align-items-center mb-3"
@@ -61,13 +69,14 @@
           ></unicon>
         </client-only>
       </div>
-      <div v-if="expandedSections.price">
-        <b-form-radio-group v-model="filters.price" stacked>
+      <b-collapse v-model="expandedSections.price">
+        <!-- Use local ref for immediate UI update, watcher updates store -->
+        <b-form-radio-group v-model="localFilters.price" stacked>
           <b-form-radio value="free">Free</b-form-radio>
           <b-form-radio value="premium">Premium</b-form-radio>
           <b-form-radio value="all">All</b-form-radio>
         </b-form-radio-group>
-      </div>
+      </b-collapse>
     </div>
 
     <div class="p-3 border-bottom">
@@ -82,14 +91,16 @@
           ></unicon>
         </client-only>
       </div>
-      <div v-if="expandedSections.view">
-        <b-form-radio-group v-model="filters.view" stacked>
+      <b-collapse v-model="expandedSections.view">
+        <!-- Use local ref for immediate UI update, watcher updates store -->
+        <b-form-radio-group v-model="localFilters.view" stacked>
           <b-form-radio value="pack">Pack</b-form-radio>
           <b-form-radio value="item">Individual</b-form-radio>
         </b-form-radio-group>
-      </div>
+      </b-collapse>
     </div>
 
+    <!-- Sort By Filter -->
     <div class="p-3 border-bottom">
       <div
         class="d-flex justify-content-between align-items-center mb-3"
@@ -102,21 +113,47 @@
           ></unicon>
         </client-only>
       </div>
-      <div v-if="expandedSections.sortBy">
-        <b-form-radio-group v-model="filters.sortBy" stacked>
+      <b-collapse v-model="expandedSections.sortBy">
+        <!-- Use local ref for immediate UI update, watcher updates store -->
+        <b-form-radio-group v-model="localFilters.sortBy" stacked>
           <b-form-radio value="popular">Popular</b-form-radio>
           <b-form-radio value="latest">Latest</b-form-radio>
           <b-form-radio value="featured">Featured</b-form-radio>
         </b-form-radio-group>
-      </div>
+      </b-collapse>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
-import { storeToRefs } from "pinia";
-import { useSearchStore } from "~/stores/search";
+// Use reactive local state mirroring store filters for responsive UI binding
+// Initialize with store values
+const searchStore = useSearchStore();
+const { filters: storeFilters, exclusiveItemsCount } = storeToRefs(searchStore);
+
+// Use reactive for local copy to ensure watchers trigger correctly
+const localFilters = reactive<SearchFilters>({ ...storeFilters.value });
+
+// Watch for changes coming FROM the store (e.g., route change, reste)
+watch(
+  storeFilters,
+  (newStoreFilters) => {
+    // Update local state only if different to prevent infinite loops
+    // This has resulted multiple API calls when filters changes
+    Object.assign(localFilters, newStoreFilters);
+  },
+  { deep: true }
+);
+
+// Watch for changes made locally IN the sidebar
+watch(
+  localFilters,
+  (newLocalFilters) => {
+    // Update the store which triggers fetches and route updates
+    searchStore.updateFilters({ ...newLocalFilters });
+  },
+  { deep: true }
+);
 
 const expandedSections = ref({
   asset: true,
@@ -124,51 +161,6 @@ const expandedSections = ref({
   view: true,
   sortBy: true,
 });
-
-const searchStore = useSearchStore();
-const { filters, isLoading, totalItems } = storeToRefs(searchStore);
-
-// Debounce timer for API calls
-const debounceTimer = ref(null);
-
-// Watch for non-exclusive filter changes that need API calls
-watch(
-  () => ({
-    assetType: filters.value.assetType,
-    price: filters.value.price,
-    view: filters.value.view,
-    sortBy: filters.value.sortBy,
-  }),
-  (newFilters) => {
-    // Clear previous timer
-    if (debounceTimer.value) clearTimeout(debounceTimer.value);
-
-    // Set new timer
-    debounceTimer.value = setTimeout(() => {
-      searchStore.fetchResults(newFilters.assetType, {
-        page: 1,
-        perPage: newFilters.assetType === "icons" ? 60 : 30,
-        sort: newFilters.sortBy || "relevant",
-      });
-    }, 300); // 300ms debounce
-  },
-  { deep: true }
-);
-
-// Don't need API calls for exclusive filter toggle (client-side filtering)
-// But we might want to show a brief loading state for better UX
-watch(
-  () => filters.value.exclusive,
-  () => {
-    // For large result sets, briefly show loading state for better UX
-    if (totalItems.value > 100) {
-      isLoading.value = true;
-      setTimeout(() => {
-        isLoading.value = false;
-      }, 200);
-    }
-  }
-);
 
 function resetFilters() {
   searchStore.resetFilters();
@@ -205,8 +197,7 @@ function toggleSection(section: keyof typeof expandedSections.value) {
   font-weight: 500;
 }
 
-/* Make section headers clickable */
-[class*="justify-content-between"] {
+[class*="justify-content-between"][class*="mb-3"] {
   cursor: pointer;
 }
 
