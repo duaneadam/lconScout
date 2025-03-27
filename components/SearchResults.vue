@@ -20,14 +20,17 @@
       </div>
     </div>
 
-    <div v-else-if="error && assets.length === 0" class="text-center p-5">
+    <div
+      v-else-if="error && assets.length === 0 && shouldShowError"
+      class="text-center p-5"
+    >
       <p class="text-danger">{{ error }}</p>
       <BButton variant="primary" @click="fetchAssets(true)">Try Again</BButton>
     </div>
 
     <div v-else>
       <div v-if="assets.length === 0" class="text-center p-5">
-        <p>No results found. Try a different search term.</p>
+        <p>No results found.</p>
       </div>
 
       <div
@@ -137,46 +140,29 @@ type Asset = {
   };
 };
 
-type APIResponse = {
-  status: string;
-  response: {
-    items: {
-      current_page: number;
-      data: Asset[];
-      total: number;
-      per_page: number;
-      last_page: number;
-    };
-  };
-};
-
-// Props
 const props = defineProps<{
   assetType: string;
   searchQuery: string;
   cardVariant?: "default" | "square";
 }>();
 
-// Get the feature flag only once in the parent component
 const { playerType } = useLottieFeatureFlag();
 const lottiePlayerType = computed(
   () => playerType.value as "dotlottie" | "lottiefiles"
 );
 
-// Component state
 const loading = ref(true);
 const loadingMore = ref(false);
 const error = ref<string | null>(null);
 const currentPage = ref(1);
 const perPage = computed(() => (props.assetType === "icons" ? 60 : 30));
 const loadMoreTrigger = ref<HTMLElement | null>(null);
-const isUserLoggedIn = ref(false); // TODO
+const isUserLoggedIn = ref(false);
+const shouldShowError = ref(false);
 
-// Use search store
 const { totalItems, results: assets, filters } = storeToRefs(useSearchStore());
 const { fetchResults, updateQuery } = useSearchStore();
 
-// Compute if there are more pages
 const hasMorePages = computed(() => {
   if (!isUserLoggedIn.value && currentPage.value >= 2) {
     return false;
@@ -184,34 +170,8 @@ const hasMorePages = computed(() => {
   return assets.value.length < totalItems.value;
 });
 
-// Intersection Observer
 let observer: IntersectionObserver | null = null;
 
-// Watch for changes in search query or asset type
-watch(
-  [() => props.searchQuery, () => filters.value],
-  async (newValues, oldValues) => {
-    const [newQuery, newFilters] = newValues;
-    const [oldQuery, oldFilters] = oldValues;
-
-    if (oldQuery === undefined && oldFilters === undefined) {
-      return;
-    }
-
-    currentPage.value = 1;
-  },
-  { deep: true }
-);
-
-watch(
-  () => filters.value.exclusive,
-  () => {
-    // Reset to page 1 when the exclusive filter changes
-    currentPage.value = 1;
-  }
-);
-
-// Fetch assets from the API
 const fetchAssets = async (isNewSearch = false) => {
   if (isNewSearch) {
     loading.value = true;
@@ -222,18 +182,22 @@ const fetchAssets = async (isNewSearch = false) => {
 
   error.value = null;
 
-  try {
-    // Update the query in the store if needed
-    if (props.searchQuery) {
-      updateQuery(props.searchQuery);
-    }
+  if (!props.searchQuery || props.searchQuery.trim() === "") {
+    loading.value = false;
+    loadingMore.value = false;
+    return;
+  }
 
-    // Use the store's fetchResults function
+  try {
+    updateQuery(props.searchQuery);
+
     await fetchResults(props.assetType, {
       perPage: perPage.value,
       page: currentPage.value,
       sort: "relevant",
     });
+
+    shouldShowError.value = true;
   } catch (e) {
     error.value = e instanceof Error ? e.message : "An unknown error occurred";
   } finally {
@@ -242,44 +206,75 @@ const fetchAssets = async (isNewSearch = false) => {
   }
 };
 
-// Load next page of results
 const loadNextPage = async () => {
   if (loadingMore.value || !hasMorePages.value) return;
   currentPage.value++;
   await fetchAssets();
 };
 
-// Setup and cleanup
-onMounted(async () => {
-  await fetchAssets(true);
-  nextTick(() => {
-    observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          loadNextPage();
-        }
-      },
-      { threshold: 0.5 }
-    );
+const setupObserver = () => {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
 
-    if (loadMoreTrigger.value) {
-      observer.observe(loadMoreTrigger.value);
+  observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry?.isIntersecting) {
+        loadNextPage();
+      }
+    },
+    { threshold: 0.5 }
+  );
+
+  if (loadMoreTrigger.value) {
+    observer.observe(loadMoreTrigger.value);
+  }
+};
+
+watch(
+  [() => props.searchQuery, () => props.assetType],
+  ([newQuery, newAssetType], [oldQuery, oldAssetType]) => {
+    if (newQuery !== oldQuery || newAssetType !== oldAssetType) {
+      currentPage.value = 1;
+      shouldShowError.value = !!newQuery;
+
+      if (newQuery && newQuery.trim() !== "") {
+        fetchAssets(true).then(() => {
+          nextTick(() => {
+            setupObserver();
+          });
+        });
+      } else {
+        loading.value = false;
+      }
     }
+  },
+  { immediate: true }
+);
+
+watch(loadMoreTrigger, (newVal) => {
+  if (newVal) {
+    setupObserver();
+  }
+});
+
+onMounted(async () => {
+  if (props.searchQuery && props.searchQuery.trim() !== "") {
+    await fetchAssets(true);
+  } else {
+    loading.value = false;
+  }
+
+  nextTick(() => {
+    setupObserver();
   });
 });
 
 onUnmounted(() => {
-  if (observer && loadMoreTrigger.value) {
-    observer.unobserve(loadMoreTrigger.value);
+  if (observer) {
     observer.disconnect();
+    observer = null;
   }
 });
 </script>
-
-<style scoped>
-/* Optional: Make the load more trigger invisible but take up space */
-.load-more-trigger {
-  height: 10px;
-  opacity: 0;
-}
-</style>
