@@ -37,6 +37,28 @@ useHead({
           }  for your 3D projects & designs in Blender, Unreal Engine, Unity, Cinema 4D & more. Available in PNG, BLEND, glTF, C4D, OBJ, PSD or FBX formats for commercial and personal use..`
       ),
     },
+    {
+      name: "og:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          }  for your 3D projects & designs in Blender, Unreal Engine, Unity, Cinema 4D & more. Available in PNG, BLEND, glTF, C4D, OBJ, PSD or FBX formats for commercial and personal use..`
+      ),
+    },
+    {
+      name: "twitter:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          }  for your 3D projects & designs in Blender, Unreal Engine, Unity, Cinema 4D & more. Available in PNG, BLEND, glTF, C4D, OBJ, PSD or FBX formats for commercial and personal use..`
+      ),
+    },
   ],
 });
 </script>

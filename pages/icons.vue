@@ -35,6 +35,28 @@ useHead({
           } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles.`
       ),
     },
+    {
+      name: "og:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles.`
+      ),
+    },
+    {
+      name: "twitter:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles.`
+      ),
+    },
   ],
 });
 </script>

@@ -34,6 +34,28 @@ useHead({
           } in GIF, static SVG, JSON for Lottie, AEP or MP4 formats. Bring motion to your designs or projects in Canva, Figma, Adobe XD, After Effects, Sketch & more.`
       ),
     },
+    {
+      name: "og:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          } in GIF, static SVG, JSON for Lottie, AEP or MP4 formats. Bring motion to your designs or projects in Canva, Figma, Adobe XD, After Effects, Sketch & more.`
+      ),
+    },
+    {
+      name: "twitter:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          } in GIF, static SVG, JSON for Lottie, AEP or MP4 formats. Bring motion to your designs or projects in Canva, Figma, Adobe XD, After Effects, Sketch & more.`
+      ),
+    },
   ],
 });
 </script>

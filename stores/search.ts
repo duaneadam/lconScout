@@ -121,16 +121,21 @@ export const useSearchStore = defineStore("search", () => {
   );
 
   const searchTitle = computed(() => {
+    const assetDisplayName =
+      filters.value.assetType === "all-assets"
+        ? "Design Assets" // Use 'Design Assets' for 'all-assets' type
+        : humanizedAssetType.value;
+
     if (isLoading.value && currentPage.value === 1) {
-      return `Searching for ${query.value ? query.value + " " : ""}${
-        humanizedAssetType.value
-      }...`;
+      return `Searching for ${
+        query.value ? query.value + " " : ""
+      }${assetDisplayName}...`;
     }
     const queryText = query.value ? `${capitalizeWords(query.value)} ` : "";
     // Use apiTotalItems for title consistency, even when exclusive is checked
-    return `${formatNumber(apiTotalItems.value)} ${queryText}${
-      humanizedAssetType.value
-    }`;
+    return `${formatNumber(
+      apiTotalItems.value
+    )} ${queryText}${assetDisplayName}`;
   });
 
   const searchSubtitle = computed(() => {

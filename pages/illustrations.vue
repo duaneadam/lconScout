@@ -34,6 +34,28 @@ useHead({
           } to enhance your design projects in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in SVG, PNG, EPS, AI or JPG formats.`
       ),
     },
+    {
+      name: "og:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          } to enhance your design projects in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in SVG, PNG, EPS, AI or JPG formats.`
+      ),
+    },
+    {
+      name: "twitter:description",
+      content: computed(
+        () =>
+          `Free Download ${formatNumber(apiTotalItems.value)} ${
+            query.value ? capitalizeWords(query.value) + " " : ""
+          }${
+            humanizedAssetType.value
+          } to enhance your design projects in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in SVG, PNG, EPS, AI or JPG formats.`
+      ),
+    },
   ],
 });
 </script>

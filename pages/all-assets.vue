@@ -219,7 +219,25 @@ useHead({
         () =>
           `Download premium & free design assets for ${
             searchQuery.value ? capitalizeWords(searchQuery.value) : ""
-          }. Available as Icons, Illustrations, 3D Illustrations, and Lottie Animations.`
+          }. - 3D Illustrations, Lottie Animations, Vector Icons and Illustrations. Available in SVG, PNG, BLEND, GIF for free or premium at IconScout.`
+      ),
+    },
+    {
+      name: "og:title",
+      content: computed(
+        () =>
+          `Download premium & free design assets for ${
+            searchQuery.value ? capitalizeWords(searchQuery.value) : ""
+          }. - 3D Illustrations, Lottie Animations, Vector Icons and Illustrations. Available in SVG, PNG, BLEND, GIF for free or premium at IconScout.`
+      ),
+    },
+    {
+      name: "twitter:description",
+      content: computed(
+        () =>
+          `Download premium & free design assets for ${
+            searchQuery.value ? capitalizeWords(searchQuery.value) : ""
+          }. - 3D Illustrations, Lottie Animations, Vector Icons and Illustrations. Available in SVG, PNG, BLEND, GIF for free or premium at IconScout.`
       ),
     },
   ],
