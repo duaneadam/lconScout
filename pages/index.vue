@@ -1,9 +1,10 @@
 <template>
-  <h1 class="text-center">Home</h1>
+  <section class="container"></section>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
   title: "Home - IconScout",
+  redirect: "/all-assets",
 });
 </script>
