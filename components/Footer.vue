@@ -433,7 +433,7 @@ onUnmounted(() => {
 <!-- Can't use scoped here, client side changes -->
 <style lang="scss">
 @import "/assets/scss/variables";
-.unicon {
+.footer .unicon {
   svg {
     color: $gray;
     fill: $gray;

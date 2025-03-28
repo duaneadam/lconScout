@@ -29,6 +29,7 @@ import {
   uniImage,
   uniPicture,
   uniCamera,
+  uniExternalLinkAlt,
 } from "vue-unicons/dist/icons";
 
 Unicon.add([
@@ -58,8 +59,8 @@ Unicon.add([
   uniApple,
   uniImage,
   uniPicture,
-
   uniCamera,
+  uniExternalLinkAlt,
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {

@@ -8,7 +8,15 @@
     }"
   >
     <div class="search-card__overlay">
-      <span class="search-card__overlay-text">View more</span>
+      <span class="d-flex align-items-center text-white"
+        >View more
+        <client-only>
+          <unicon
+            name="external-link-alt"
+            class="text-white ms-1b h-4"
+            fill="white"
+          ></unicon> </client-only
+      ></span>
     </div>
 
     <div v-if="!skeleton" class="search-card__thumbnail">
@@ -142,7 +150,6 @@ const imageUrl = computed(() => {
   );
 });
 
-// Get the Lottie URL
 const lottieUrl = computed(() => {
   if (!props.asset || props.asset.asset !== "lottie") return "";
 
