@@ -14,6 +14,8 @@
           :grid-class="defaultGridClass"
           :card-variant="'default'"
           :lottie-player-type="lottiePlayerType"
+          :is-exclusive="filters.exclusive"
+          :view-all-link="getViewAllLink('3d-illustrations')"
           @retry="fetchSpecificAsset('3d-illustrations')"
         />
         <AssetSection
@@ -24,6 +26,8 @@
           :grid-class="defaultGridClass"
           :card-variant="'default'"
           :lottie-player-type="lottiePlayerType"
+          :is-exclusive="filters.exclusive"
+          :view-all-link="getViewAllLink('lottie-animations')"
           @retry="fetchSpecificAsset('lottie-animations')"
         />
         <AssetSection
@@ -34,6 +38,8 @@
           :grid-class="defaultGridClass"
           :card-variant="'default'"
           :lottie-player-type="lottiePlayerType"
+          :is-exclusive="filters.exclusive"
+          :view-all-link="getViewAllLink('illustrations')"
           @retry="fetchSpecificAsset('illustrations')"
         />
         <AssetSection
@@ -44,17 +50,23 @@
           :grid-class="iconsGridClass"
           :card-variant="'square'"
           :lottie-player-type="lottiePlayerType"
+          :is-exclusive="filters.exclusive"
+          :view-all-link="getViewAllLink('icons')"
           @retry="fetchSpecificAsset('icons')"
         />
+
+        <div class="pt-3b"></div>
       </template>
     </div>
   </SearchLayout>
 </template>
 
 <script setup lang="ts">
+import { watchDebounced } from "@vueuse/core";
+
 const route = useRoute();
 const searchStore = useSearchStore();
-const { query: searchQuery } = storeToRefs(searchStore);
+const { query: searchQuery, filters } = storeToRefs(searchStore);
 const { playerType } = useLottieFeatureFlag();
 const lottiePlayerType = computed(() => playerType.value);
 
@@ -77,31 +89,34 @@ const errorIcons = ref<string | null>(null);
 const defaultGridClass = "row-cols-1 row-cols-md-2 row-cols-lg-4 row-cols-xl-5";
 const iconsGridClass = "row-cols-2 row-cols-md-4 row-cols-lg-8 row-cols-xl-10";
 
-// Fetching config
 const assetConfigs = {
   "3d-illustrations": {
     perPage: 15,
     resultsRef: results3d,
     loadingRef: loading3d,
     errorRef: error3d,
+    path: "/3d-illustrations",
   },
   "lottie-animations": {
     perPage: 15,
     resultsRef: resultsLottie,
     loadingRef: loadingLottie,
     errorRef: errorLottie,
+    path: "/lottie-animations",
   },
   illustrations: {
     perPage: 15,
     resultsRef: resultsIllustrations,
     loadingRef: loadingIllustrations,
     errorRef: errorIllustrations,
+    path: "/illustrations",
   },
   icons: {
     perPage: 30,
     resultsRef: resultsIcons,
     loadingRef: loadingIcons,
     errorRef: errorIcons,
+    path: "/icons",
   },
 };
 
@@ -118,11 +133,11 @@ async function fetchSpecificAsset(assetType: keyof typeof assetConfigs) {
       params: {
         query: searchQuery.value.trim(),
         assetType: assetType,
-        page: 1, // Always page 1, no infinite scroll here
+        page: 1,
         perPage: config.perPage,
-        sort: "featured",
-        price: searchStore.filters.price,
-        view: searchStore.filters.view,
+        sort: filters.value.sortBy,
+        price: filters.value.price,
+        view: filters.value.view,
       },
     });
 
@@ -151,7 +166,6 @@ async function fetchAllAssets() {
   }
 
   if (!searchQuery.value) {
-    // Clear all results if query is empty
     Object.values(assetConfigs).forEach((config) => {
       config.resultsRef.value = [];
       config.errorRef.value = null;
@@ -167,11 +181,30 @@ async function fetchAllAssets() {
   );
 }
 
+const getViewAllLink = (assetTypeKey: keyof typeof assetConfigs): string => {
+  const basePath = assetConfigs[assetTypeKey]?.path || "/all-assets";
+  return searchQuery.value
+    ? `${basePath}/${encodeURIComponent(searchQuery.value)}`
+    : basePath;
+};
+
 await useAsyncData("all-assets-fetch", fetchAllAssets);
 
 watch(searchQuery, fetchAllAssets);
 
-// SEO Meta Tags - Use computed refs from the store
+watchDebounced(
+  filters,
+  () => {
+    if (searchQuery.value) {
+      fetchAllAssets();
+    }
+  },
+  {
+    debounce: 300,
+    deep: true,
+  }
+);
+
 useHead({
   title: computed(
     () =>

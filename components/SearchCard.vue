@@ -1,24 +1,81 @@
 <template>
+  <NuxtLink v-if="linkTo" :to="linkTo" class="search-card-link">
+    <article
+      class="search-card search-card--linkable"
+      :class="{
+        'search-card--square': variant === 'square',
+        'search-card--skeleton': skeleton,
+        'search-card--withOverlay': isLastInSection,
+      }"
+    >
+      <div class="search-card__overlay">
+        <span class="d-flex align-items-center text-white"
+          >{{ isLastInSection ? "View All" : "View more" }}
+          <client-only>
+            <unicon
+              name="external-link-alt"
+              class="text-white ms-1b h-4 mb-1b"
+              fill="white"
+            ></unicon> </client-only
+        ></span>
+      </div>
+
+      <div v-if="!skeleton" class="search-card__thumbnail">
+        <div class="search-card__image-wrapper">
+          <template v-if="asset?.asset === 'lottie'">
+            <!-- DotLottieVue player -->
+            <DotLottieVue
+              v-if="lottiePlayerType === 'dotlottie'"
+              ref="dotLottiePlayer"
+              :src="lottieUrl"
+              :autoplay="true"
+              :loop="true"
+              :playOnHover="false"
+              class="search-card__lottie"
+            />
+            <!-- end DotLottieVue player -->
+
+            <!-- LottiePlayer component -->
+            <lottie-player
+              v-else-if="lottiePlayerType === 'lottiejson'"
+              ref="lottieFilesPlayer"
+              :src="lottieUrl"
+              background="transparent"
+              speed="1"
+              style="width: 100%; height: 100%"
+              loop
+              autoplay
+              class="search-card__lottie"
+            ></lottie-player>
+          </template>
+
+          <!-- For other asset types or fallback -->
+          <img
+            v-else
+            :src="imageUrl"
+            :alt="asset?.name"
+            class="search-card__image"
+          />
+        </div>
+      </div>
+
+      <div
+        v-else
+        class="search-card__thumbnail search-card__thumbnail--skeleton"
+      ></div>
+    </article>
+  </NuxtLink>
+
   <article
+    v-else
     class="search-card"
     :class="{
       'search-card--square': variant === 'square',
       'search-card--skeleton': skeleton,
-      'search-card--withOverlay': isLastInSection,
+      // 'search-card--withOverlay': isLastInSection, // Overlay only needed for linkable version in this context
     }"
   >
-    <div class="search-card__overlay">
-      <span class="d-flex align-items-center text-white"
-        >View more
-        <client-only>
-          <unicon
-            name="external-link-alt"
-            class="text-white ms-1b h-4"
-            fill="white"
-          ></unicon> </client-only
-      ></span>
-    </div>
-
+    <!-- No overlay needed for non-linkable cards -->
     <div v-if="!skeleton" class="search-card__thumbnail">
       <div class="search-card__image-wrapper">
         <template v-if="asset?.asset === 'lottie'">
@@ -36,7 +93,7 @@
 
           <!-- LottiePlayer component -->
           <lottie-player
-            v-else
+            v-else-if="lottiePlayerType === 'lottiejson'"
             ref="lottieFilesPlayer"
             :src="lottieUrl"
             background="transparent"
@@ -68,46 +125,49 @@
 <script setup lang="ts">
 import { DotLottieVue } from "@lottiefiles/dotlottie-vue";
 
-const props = defineProps<{
-  asset?: {
-    id: number;
-    uuid: string;
-    asset: string;
-    name: string;
-    slug: string;
-    identifier: string;
-    price: number;
-    urls: {
-      thumb?: string;
-      png_64?: string;
-      png_128?: string;
-      png_256?: string;
-      preview_image?: string;
-      lottie?: string;
-      original?: string;
-      json?: string;
-    };
-    color_codes: Array<{
-      decimal_color: number;
-      color_id: number;
-    }>;
-    is_premium: boolean;
-    payable_price: number;
-    formats: Array<{
-      id: number;
-      name: string;
-      mime_type: string;
-    }>;
-    additional_informations?: {
-      preview_frame?: number;
-      frame_rate?: number;
-      total_frames?: number;
-    };
+type Asset = {
+  id: number;
+  uuid: string;
+  asset: string;
+  name: string;
+  slug: string;
+  identifier: string;
+  price: number;
+  urls: {
+    thumb?: string;
+    png_64?: string;
+    png_128?: string;
+    png_256?: string;
+    preview_image?: string;
+    lottie?: string;
+    original?: string;
+    json?: string;
   };
+  color_codes: Array<{
+    decimal_color: number;
+    color_id: number;
+  }>;
+  is_premium: boolean;
+  payable_price: number;
+  formats: Array<{
+    id: number;
+    name: string;
+    mime_type: string;
+  }>;
+  additional_informations?: {
+    preview_frame?: number;
+    frame_rate?: number;
+    total_frames?: number;
+  };
+};
+
+const props = defineProps<{
+  asset?: Asset;
   variant?: "default" | "square";
   skeleton?: boolean;
   isLastInSection?: boolean;
   lottiePlayerType: "dotlottie" | "lottiejson";
+  linkTo?: string; // Optional prop for the link target
 }>();
 
 const dotLottiePlayer = ref<InstanceType<typeof DotLottieVue> | null>(null);
@@ -115,7 +175,11 @@ const lottieFilesPlayer = ref<any>(null);
 
 // Register the lottie-player web component on client-side only
 onMounted(() => {
-  if (typeof window !== "undefined" && !customElements.get("lottie-player")) {
+  if (
+    props.lottiePlayerType === "lottiejson" &&
+    typeof window !== "undefined" &&
+    !customElements.get("lottie-player")
+  ) {
     import("@lottiefiles/lottie-player");
   }
 });
@@ -164,6 +228,13 @@ const lottieUrl = computed(() => {
 </script>
 
 <style scoped lang="scss">
+.search-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
 .search-card {
   position: relative;
   display: flex;
@@ -177,6 +248,11 @@ const lottieUrl = computed(() => {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+
+  &--linkable:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 
   &--withOverlay {
     .search-card__overlay {
@@ -211,6 +287,8 @@ const lottieUrl = computed(() => {
     opacity: 0;
     transition: opacity 0.2s ease;
     z-index: 2;
+    cursor: pointer;
+    border-radius: 8px;
   }
 
   &__overlay-text {
