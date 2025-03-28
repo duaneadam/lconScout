@@ -4,7 +4,7 @@
     :class="{
       'search-card--square': variant === 'square',
       'search-card--skeleton': skeleton,
-      'search-card--withOverlay': withOverlay,
+      'search-card--withOverlay': isLastInSection,
     }"
   >
     <div class="search-card__overlay">
@@ -98,7 +98,7 @@ const props = defineProps<{
   };
   variant?: "default" | "square";
   skeleton?: boolean;
-  withOverlay?: boolean;
+  isLastInSection?: boolean;
   lottiePlayerType: "dotlottie" | "lottiejson";
 }>();
 

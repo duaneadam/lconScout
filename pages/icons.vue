@@ -1,13 +1,16 @@
 <template>
-  <SearchLayout :card-variant="cardVariant" />
+  <SearchLayout>
+    <SearchResults :card-variant="cardVariant" />
+  </SearchLayout>
 </template>
 
 <script setup lang="ts">
 const searchStore = useSearchStore();
-const { query, apiTotalItems, humanizedAssetType } = storeToRefs(searchStore);
+const { query, apiTotalItems, humanizedAssetType, filters } =
+  storeToRefs(searchStore);
 
 const cardVariant = computed(() =>
-  searchStore.filters.assetType === "icons" ? "square" : "default"
+  filters.value.assetType === "icons" ? "square" : "default"
 );
 
 await useAsyncData("search-init", () => searchStore.initializeFromRoute());

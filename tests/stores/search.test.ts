@@ -1,6 +1,5 @@
 import { setActivePinia, createPinia } from "pinia";
 
-// Mock Nuxt's composables used in the store
 vi.mock("#app", () => ({
   useRoute: () => ({
     fullPath: "/",
@@ -16,24 +15,21 @@ vi.mock("#app", () => ({
   }),
 }));
 
-// Mock utility functions if they exist and are used
 vi.mock("@/utils/format", () => ({
   formatNumber: (num: number) => num.toString(),
   capitalizeWords: (str: string) => str,
 }));
 
-// Stub $fetch globally for convenience in tests
 const mockFetch = vi.fn();
 vi.stubGlobal("$fetch", mockFetch);
 
 describe("useSearchStore", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
-    // Reset mocks and timers before each test
+
     vi.clearAllMocks();
     vi.useRealTimers();
 
-    // Default mock for $fetch to prevent errors in unrelated tests
     mockFetch.mockResolvedValue({
       status: "success",
       response: { items: { data: [], total: 0 } },
@@ -44,19 +40,18 @@ describe("useSearchStore", () => {
     vi.clearAllMocks();
   });
 
-  // Helper function to set up store with mock results
   async function setupStoreWithResults(
     store: ReturnType<typeof useSearchStore>,
     mockData: any[],
     mockTotal: number,
-    query = "test" // Ensure query is set for fetch to run
+    query = "test"
   ) {
-    store.query = query; // Set query before fetching
+    store.query = query;
     mockFetch.mockResolvedValueOnce({
       status: "success",
       response: { items: { data: mockData, total: mockTotal } },
     });
-    await store.fetchResults(true); // Use isNewSearch = true
+    await store.fetchResults(true);
   }
 
   it("initializes with correct default state", () => {
@@ -69,9 +64,9 @@ describe("useSearchStore", () => {
       view: "item",
       sortBy: "featured",
     });
-    expect(store.rawResults).toEqual([]); // Check rawResults
+    expect(store.rawResults).toEqual([]);
     expect(store.results).toEqual([]);
-    expect(store.apiTotalItems).toBe(0); // Check apiTotalItems
+    expect(store.apiTotalItems).toBe(0);
     expect(store.totalItems).toBe(0);
     expect(store.exclusiveItemsCount).toBe(0);
     expect(store.isLoading).toBe(false);
@@ -80,10 +75,10 @@ describe("useSearchStore", () => {
 
   it("updateQuery updates the query state and triggers fetch", async () => {
     const store = useSearchStore();
-    store.query = "initial"; // Set an initial query
+    store.query = "initial";
     await store.updateQuery("test query");
     expect(store.query).toBe("test query");
-    // updateQuery calls fetchResults(true) internally
+
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/search",
@@ -92,8 +87,6 @@ describe("useSearchStore", () => {
       })
     );
   });
-
-  // Removed the 'updateTotalItems' test as it's not a public action
 
   it("humanizedAssetType computes human-readable names", () => {
     const store = useSearchStore();
@@ -119,10 +112,10 @@ describe("useSearchStore", () => {
       await setupStoreWithResults(store, mockResults, 10);
 
       store.filters.exclusive = false;
-      // Ensure computed property recalculates if needed (though Pinia should handle this)
+
       await nextTick();
       expect(store.results).toEqual(mockResults);
-      expect(store.rawResults).toEqual(mockResults); // Verify rawResults too
+      expect(store.rawResults).toEqual(mockResults);
     });
 
     it("results returns only exclusive items when exclusive is true", async () => {
@@ -141,7 +134,7 @@ describe("useSearchStore", () => {
         { id: 1, additional_informations: { iconscout_exclusive: true } },
         { id: 3, additional_informations: { iconscout_exclusive: true } },
       ]);
-      expect(store.rawResults).toEqual(mockResults); // rawResults should be unchanged
+      expect(store.rawResults).toEqual(mockResults);
     });
 
     it("totalItems returns apiTotalItems when exclusive is false", async () => {
@@ -161,13 +154,13 @@ describe("useSearchStore", () => {
         { id: 2, additional_informations: { iconscout_exclusive: false } },
         { id: 3, additional_informations: { iconscout_exclusive: true } },
       ];
-      await setupStoreWithResults(store, mockResults, 500); // apiTotalItems is 500
+      await setupStoreWithResults(store, mockResults, 500);
 
       store.filters.exclusive = true;
       await nextTick();
-      // totalItems should reflect the count of *loaded* exclusive items
+
       expect(store.totalItems).toBe(2);
-      expect(store.apiTotalItems).toBe(500); // apiTotalItems remains the total from API
+      expect(store.apiTotalItems).toBe(500);
     });
 
     it("exclusiveItemsCount correctly counts items after fetch", async () => {
@@ -196,8 +189,8 @@ describe("useSearchStore", () => {
       });
 
       store.query = "search term";
-      store.filters.assetType = "icons"; // Set assetType *before* calling fetch
-      const promise = store.fetchResults(true); // isNewSearch = true
+      store.filters.assetType = "icons";
+      const promise = store.fetchResults(true);
 
       expect(store.isLoading).toBe(true);
       await promise;
@@ -209,15 +202,15 @@ describe("useSearchStore", () => {
           query: "search term",
           assetType: "icons",
           page: 1,
-          perPage: 60, // Corrected: icons use 60 perPage
+          perPage: 60,
           sort: "featured",
           price: "all",
           view: "item",
         },
       });
 
-      expect(store.rawResults).toEqual(mockData); // Check rawResults
-      expect(store.apiTotalItems).toBe(mockTotal); // Check apiTotalItems
+      expect(store.rawResults).toEqual(mockData);
+      expect(store.apiTotalItems).toBe(mockTotal);
       expect(store.error).toBeNull();
     });
 
@@ -226,9 +219,8 @@ describe("useSearchStore", () => {
       const initialData = [{ id: "a" }];
       const newData = [{ id: "b" }, { id: "c" }];
       const initialTotal = 10;
-      const newTotal = 25; // API might return a different total on subsequent pages
+      const newTotal = 25;
 
-      // Initial fetch (page 1)
       await setupStoreWithResults(
         store,
         initialData,
@@ -238,32 +230,30 @@ describe("useSearchStore", () => {
       expect(store.rawResults).toEqual(initialData);
       expect(store.apiTotalItems).toBe(initialTotal);
       expect(store.currentPage).toBe(1);
-      expect(mockFetch).toHaveBeenCalledTimes(1); // From setupStoreWithResults
+      expect(mockFetch).toHaveBeenCalledTimes(1);
 
-      // Prepare mock for page 2
       mockFetch.mockResolvedValueOnce({
         status: "success",
         response: { items: { data: newData, total: newTotal } },
       });
 
-      // Manually increment page and call fetchResults(false)
       store.currentPage = 2;
-      const promise = store.fetchResults(false); // isNewSearch = false
+      const promise = store.fetchResults(false);
 
       expect(store.isLoadingMore).toBe(true);
       await promise;
       expect(store.isLoadingMore).toBe(false);
 
-      expect(mockFetch).toHaveBeenCalledTimes(2); // Initial + page 2
+      expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(mockFetch).toHaveBeenLastCalledWith("/api/search", {
         params: expect.objectContaining({
           query: "more test",
-          page: 2, // Should fetch page 2
+          page: 2,
         }),
       });
 
-      expect(store.rawResults).toEqual([...initialData, ...newData]); // Results appended
-      expect(store.apiTotalItems).toBe(newTotal); // Total updated
+      expect(store.rawResults).toEqual([...initialData, ...newData]);
+      expect(store.apiTotalItems).toBe(newTotal);
       expect(store.error).toBeNull();
     });
 
@@ -271,36 +261,33 @@ describe("useSearchStore", () => {
       const store = useSearchStore();
       const errorMessage = "API failed";
       mockFetch.mockResolvedValueOnce({
-        // Resolves, but with an error status
         status: "error",
         message: errorMessage,
-        response: { items: { data: [], total: 0 } }, // Ensure response structure
+        response: { items: { data: [], total: 0 } },
       });
 
       store.query = "error test";
-      await store.fetchResults(true); // Call the action
+      await store.fetchResults(true);
 
-      // Check state after the action completes
       expect(store.isLoading).toBe(false);
-      expect(store.rawResults).toEqual([]); // Results cleared on error for new search
-      expect(store.apiTotalItems).toBe(0); // Total cleared
-      expect(store.error).toBe(errorMessage); // Error state should be set
+      expect(store.rawResults).toEqual([]);
+      expect(store.apiTotalItems).toBe(0);
+      expect(store.error).toBe(errorMessage);
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
     it("handles network/fetch error (rejected promise)", async () => {
       const store = useSearchStore();
       const networkError = new Error("Network failed");
-      mockFetch.mockRejectedValueOnce(networkError); // $fetch promise rejects
+      mockFetch.mockRejectedValueOnce(networkError);
 
       store.query = "network error test";
-      await store.fetchResults(true); // Call the action
+      await store.fetchResults(true);
 
-      // Check state after the action completes
       expect(store.isLoading).toBe(false);
-      expect(store.rawResults).toEqual([]); // Results cleared on error for new search
-      expect(store.apiTotalItems).toBe(0); // Total cleared
-      expect(store.error).toBe("Network failed"); // Error state should be set
+      expect(store.rawResults).toEqual([]);
+      expect(store.apiTotalItems).toBe(0);
+      expect(store.error).toBe("Network failed");
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
   });
@@ -308,43 +295,40 @@ describe("useSearchStore", () => {
   describe("updateFilters action", () => {
     it("updates filter and triggers API call if needed", async () => {
       const store = useSearchStore();
-      store.query = "filter test"; // Need query for fetch to trigger
+      store.query = "filter test";
 
       mockFetch.mockResolvedValueOnce({
         status: "success",
         response: { items: { data: [{ id: "test" }], total: 1 } },
       });
 
-      // Update a filter that requires refetch (assetType)
       await store.updateFilters({ assetType: "illustrations" });
 
       expect(store.filters.assetType).toBe("illustrations");
-      expect(mockFetch).toHaveBeenCalledTimes(1); // Fetch should be called
+      expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(mockFetch).toHaveBeenCalledWith(
         "/api/search",
         expect.objectContaining({
           params: expect.objectContaining({
             assetType: "illustrations",
             query: "filter test",
-            page: 1, // Should reset to page 1
+            page: 1,
           }),
         })
       );
 
-      // Update a filter that doesn't require refetch (exclusive)
       mockFetch.mockClear();
       await store.updateFilters({ exclusive: true });
       expect(store.filters.exclusive).toBe(true);
-      expect(mockFetch).not.toHaveBeenCalled(); // Fetch should NOT be called
+      expect(mockFetch).not.toHaveBeenCalled();
     });
   });
 
   describe("resetFilters action", () => {
     it("resets filters to defaults and triggers API call", async () => {
       const store = useSearchStore();
-      store.query = "reset test"; // Need query for fetch to trigger
+      store.query = "reset test";
 
-      // Change some filters from default
       store.filters.exclusive = true;
       store.filters.assetType = "icons";
       store.filters.sortBy = "popular";
@@ -356,16 +340,14 @@ describe("useSearchStore", () => {
 
       await store.resetFilters();
 
-      // Check if filters are reset correctly
       expect(store.filters).toEqual({
         exclusive: false,
         price: "all",
         assetType: "all-assets",
         view: "item",
-        sortBy: "featured", // Internal state uses sortBy
+        sortBy: "featured",
       });
 
-      // Check if fetch was called with reset filters and correct param keys
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(mockFetch).toHaveBeenCalledWith(
         "/api/search",
@@ -373,18 +355,14 @@ describe("useSearchStore", () => {
           params: expect.objectContaining({
             assetType: "all-assets",
             page: 1,
-            perPage: 30, // Default for 'all-assets'
-            price: "all", // Default
+            perPage: 30,
+            price: "all",
             query: "reset test",
-            sort: "featured", // API uses 'sort'
-            view: "item", // Default
+            sort: "featured",
+            view: "item",
           }),
         })
       );
     });
   });
-
-  // Add tests for loadMoreResults, initializeFromRoute, updateRoute if needed
-  // Note: Testing initializeFromRoute and updateRoute requires more complex mocking
-  // of the Nuxt router and route objects.
 });

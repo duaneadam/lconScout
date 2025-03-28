@@ -8,19 +8,12 @@
       </div>
       <div class="flex-grow-1">
         <AssetTabs />
-        <SearchResults :card-variant="cardVariant" />
+        <slot></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useSearchStore } from "~/stores/search";
-
-defineProps<{
-  cardVariant?: "default" | "square";
-}>();
-
 const { searchTitle, searchSubtitle } = storeToRefs(useSearchStore());
 </script>
