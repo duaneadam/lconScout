@@ -34,7 +34,7 @@ useHead({
             query.value ? capitalizeWords(query.value) + " " : ""
           }${
             humanizedAssetType.value
-          } for commercial and personal use in Canva, Figma, Adobe XD, etc.`
+          }  for your 3D projects & designs in Blender, Unreal Engine, Unity, Cinema 4D & more. Available in PNG, BLEND, glTF, C4D, OBJ, PSD or FBX formats for commercial and personal use..`
       ),
     },
   ],

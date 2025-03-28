@@ -31,7 +31,7 @@ useHead({
             query.value ? capitalizeWords(query.value) + " " : ""
           }${
             humanizedAssetType.value
-          } for commercial and personal use in Canva, Figma, Adobe XD, etc.`
+          } in GIF, static SVG, JSON for Lottie, AEP or MP4 formats. Bring motion to your designs or projects in Canva, Figma, Adobe XD, After Effects, Sketch & more.`
       ),
     },
   ],

@@ -21,7 +21,7 @@ useHead({
     () =>
       `${formatNumber(apiTotalItems.value)} ${
         query.value ? capitalizeWords(query.value) + " " : ""
-      }${humanizedAssetType.value} - Free Download | IconScout` // Simplified title
+      }${humanizedAssetType.value} - Free Download | IconScout`
   ),
   meta: [
     {
@@ -32,7 +32,7 @@ useHead({
             query.value ? capitalizeWords(query.value) + " " : ""
           }${
             humanizedAssetType.value
-          } for commercial and personal use. Available in various styles.` // Simplified description
+          } for commercial and personal use in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in line, flat, gradient, isometric, glyph, sticker & more design styles.`
       ),
     },
   ],

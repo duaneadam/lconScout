@@ -31,7 +31,7 @@ useHead({
             query.value ? capitalizeWords(query.value) + " " : ""
           }${
             humanizedAssetType.value
-          } for commercial and personal use in Canva, Figma, Adobe XD, etc.` // Simplified
+          } to enhance your design projects in Canva, Figma, Adobe XD, After Effects, Sketch & more. Available in SVG, PNG, EPS, AI or JPG formats.`
       ),
     },
   ],
