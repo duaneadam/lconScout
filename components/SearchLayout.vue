@@ -17,4 +17,6 @@
 
 <script setup lang="ts">
 const { searchTitle, searchSubtitle } = storeToRefs(useSearchStore());
+
+useUrlFilters();
 </script>

@@ -1,3 +1,4 @@
+// /stores/search.ts;
 export interface SearchFilters {
   exclusive: boolean;
   price: "all" | "free" | "premium";
