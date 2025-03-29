@@ -1,3 +1,4 @@
+// SearchSidebar.vue
 <template>
   <div class="search-sidebar d-none d-md-block">
     <div

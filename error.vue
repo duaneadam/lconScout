@@ -1,3 +1,4 @@
+// error.vue
 <template>
   <main class="error-page">
     <div class="container text-center">

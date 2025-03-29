@@ -30,6 +30,7 @@ import {
   uniPicture,
   uniCamera,
   uniExternalLinkAlt,
+  uniBars,
 } from "vue-unicons/dist/icons";
 
 Unicon.add([
@@ -61,6 +62,7 @@ Unicon.add([
   uniPicture,
   uniCamera,
   uniExternalLinkAlt,
+  uniBars,
 ]);
 
 export default defineNuxtPlugin((nuxtApp) => {

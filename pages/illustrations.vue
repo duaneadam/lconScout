@@ -1,3 +1,4 @@
+// illustrations.vue
 <template>
   <SearchLayout>
     <SearchResults :card-variant="cardVariant" />

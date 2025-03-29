@@ -1,1 +1,2 @@
+// [query].vue
 <template></template>

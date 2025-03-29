@@ -1,3 +1,4 @@
+// AssetTabs.vue
 <template>
   <div class="asset-tabs">
     <b-nav tabs class="border-bottom mb-4">

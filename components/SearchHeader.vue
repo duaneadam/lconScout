@@ -1,3 +1,4 @@
+// SearchHeader.vue
 <script setup lang="ts">
 defineProps<{
   title: string;

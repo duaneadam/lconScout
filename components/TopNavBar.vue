@@ -1,3 +1,4 @@
+// TopNavBar.vue
 <template>
   <div>
     <!-- Navbar placeholder to prevent layout jump when navbar becomes fixed -->

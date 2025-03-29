@@ -1,3 +1,4 @@
+// SearchLayout.vue
 <template>
   <div class="w-100">
     <SearchHeader :title="searchTitle" :subtitle="searchSubtitle" />

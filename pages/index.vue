@@ -1,3 +1,4 @@
+// index.vue
 <template>
   <section class="container"></section>
 </template>

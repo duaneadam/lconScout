@@ -1,3 +1,4 @@
+// all-assets.vue
 <template>
   <SearchLayout>
     <div class="all-assets-container px-10b">

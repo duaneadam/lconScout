@@ -1,3 +1,4 @@
+// lottie-animations.vue
 <template>
   <SearchLayout>
     <SearchResults :card-variant="cardVariant" />

@@ -1,3 +1,4 @@
+// Upsell.vue
 <template>
   <div class="upsell">
     <div class="col-md-8 col-lg-6">

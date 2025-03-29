@@ -1,3 +1,4 @@
+// AssetSection.vue
 <template>
   <div class="asset-section py-3b">
     <h3 class="mb-6b">{{ title }}</h3>

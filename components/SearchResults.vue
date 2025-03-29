@@ -1,3 +1,4 @@
+// SearchResults.vue
 <script setup lang="ts">
 const props = defineProps<{
   cardVariant?: "default" | "square";

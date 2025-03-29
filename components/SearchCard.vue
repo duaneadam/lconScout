@@ -1,3 +1,4 @@
+// SearchCard.vue
 <template>
   <NuxtLink v-if="linkTo" :to="linkTo" class="search-card-link">
     <article
